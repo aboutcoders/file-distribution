@@ -1,0 +1,27 @@
+{
+
+    "name": "abc/file-distribution",
+    "description": "File distribution library",
+    "type": "library",
+    "keywords": [
+        "file",
+        "distribution"
+    ],
+    "homepage": "http://aboutcoders.com/",
+    "license": "AboutCoders",
+    "authors": [
+        {
+            "name": "Wojciech Ciolko",
+            "email": "w.ciolko@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4.1"
+    },
+    "autoload": {
+        "psr-4": {"Abc\\": "src/Abc"}
+    }
+}
