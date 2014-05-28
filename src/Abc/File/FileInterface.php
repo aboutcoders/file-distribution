@@ -12,7 +12,6 @@ interface FileInterface
 
     /**
      * @param string $path
-     * @return mixed
      */
     public function setPath($path);
 
@@ -27,12 +26,12 @@ interface FileInterface
     public function setLocation(LocationInterface $location);
 
     /**
-     * @return string
+     * @return int
      */
     public function getFileSize();
 
     /**
-     * @param string $fileSize
+     * @param int $fileSize
      */
     public function setFileSize($fileSize);
 
