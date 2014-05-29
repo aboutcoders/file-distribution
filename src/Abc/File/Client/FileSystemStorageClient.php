@@ -57,11 +57,18 @@ class FileSystemStorageClient implements FileSystemOperatorInterface
     /**
      * @param $remoteUrl
      * @param $localFilePath
+     * @throws StorageException
      * @return string
      */
     public function download($remoteUrl, $localFilePath)
     {
-        // TODO: Implement download() method.
+        $this->validateUrl($localFilePath);
+        $this->validateStorageUrl($remoteUrl);
+        if (!$this->exists($remoteUrl)) {
+            throw new StorageException(sprintf('The resource "%s" does not exist.', $remoteUrl));
+        }
+
+        $this->copy($remoteUrl, $localFilePath);
     }
 
     /**
@@ -75,7 +82,7 @@ class FileSystemStorageClient implements FileSystemOperatorInterface
         $this->validateUrl($localFilePath);
         $this->validateStorageUrl($remoteUrl);
         if (!file_exists($localFilePath)) {
-            throw new StorageException(sprintf('The file "%s" does not exist.', $remoteUrl));
+            throw new StorageException(sprintf('The resource "%s" does not exist.', $remoteUrl));
         }
 
         $this->copy($localFilePath, $remoteUrl);

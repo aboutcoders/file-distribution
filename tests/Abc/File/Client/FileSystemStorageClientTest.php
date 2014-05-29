@@ -66,6 +66,62 @@ class FileSystemStorageClientTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($return, 'Result is not as expected');
     }
 
+    public function testDownloadWithValidPathsCopiesFile()
+    {
+        $destinationDir = '/tmp/download/';
+        if (!file_exists($destinationDir))
+            mkdir($destinationDir);
+        $targetUrl = 'file://' . $destinationDir . 'abc.txt';
+
+        $this->subject->download($this->testFile, $targetUrl);
+        $this->assertFileExists($targetUrl, 'Expected file does not exist');
+        unlink($targetUrl);
+    }
+
+    /**
+     * @expectedException Abc\File\Client\StorageException
+     */
+    public function testDownloadWithNotExistingFileThrowsException()
+    {
+        $localFilePath = 'file:///test1.txt';
+        $remoteUrl     = 'file:///tmp/copy/abc.txt';
+
+        $this->subject->download($remoteUrl, $localFilePath);
+    }
+
+    /**
+     * @expectedException Abc\File\Client\StorageException
+     * @expectedExceptionMessage Failed to copy the file "file:///tmp/test.txt" to file:///readOnly/test1.txt.
+     */
+    public function testCopyFileThrowsException()
+    {
+        $localFilePath = 'file:///readOnly/test1.txt';
+
+        $this->subject->download($this->testFile, $localFilePath);
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage "/readOnly/test1.txt" is not a valid URL.
+     */
+    public function testValidateUrlThrowsException()
+    {
+        $testFile = '/readOnly/test1.txt';
+
+        $this->subject->download($testFile, $testFile);
+    }
+
+    /**
+     * @expectedException Abc\File\Client\StorageException
+     * @expectedExceptionMessage The url "file://test/readOnly/test1.txt" is outside of the scope of "file:///tmp".
+     */
+    public function testValidateStorageUrlThrowsException()
+    {
+        $testFile = 'file://test/readOnly/test1.txt';
+
+        $this->subject->download($testFile, $testFile);
+    }
+    
     public function testUploadWithValidPathsCopiesFile()
     {
         $destinationDir = '/tmp/copy/';
