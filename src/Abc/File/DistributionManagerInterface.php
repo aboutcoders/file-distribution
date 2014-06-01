@@ -5,9 +5,9 @@ interface DistributionManagerInterface
 {
 
     /**
-     * @param FileInterface     $file
+     * @param \Gaufrette\File   $file
      * @param LocationInterface $location
      * @return FileInterface
      */
-    public function distribute(FileInterface $file, LocationInterface $location);
+    public function distribute(\Gaufrette\File $file, LocationInterface $location);
 } 

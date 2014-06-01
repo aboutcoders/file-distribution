@@ -2,6 +2,8 @@
 
 namespace Abc\File;
 
+use Gaufrette\Filesystem;
+
 interface LocationInterface
 {
 
@@ -20,6 +22,9 @@ interface LocationInterface
      */
     public function getUrl();
 
+    /**
+     * @param string $url
+     */
     public function setUrl($url);
 
     /**
@@ -31,5 +36,8 @@ interface LocationInterface
      * @param array $properties
      */
     public function setProperties(array $properties);
-    
+
+    /** @return Filesystem */
+    public function getFilesystem();
+
 }
