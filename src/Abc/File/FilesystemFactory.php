@@ -25,7 +25,7 @@ class FilesystemFactory
         switch ($type) {
             case FilesystemType::FTP:
                 if (!isset($options['host'])) {
-                    throw new FilesystemException("host is not set for FTP adapter");
+                    throw new FilesystemException("Host is not set for FTP adapter");
                 }
                 $adapter = new FtpAdapter($path, $options['host'], $options);
                 break;
@@ -35,7 +35,7 @@ class FilesystemFactory
                 $adapter = new LocalAdapter($path, $create, $mode);
                 break;
             default:
-                throw new FilesystemException("Invalid FileSystem adapter");
+                throw new FilesystemException(sprintf("Adapter %s does not exist", $type));
         }
 
         return new Filesystem($adapter);
