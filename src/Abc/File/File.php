@@ -1,11 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: wojciechciolko
- * Date: 28.05.2014
- * Time: 16:57
- */
-
 namespace Abc\File;
 
 

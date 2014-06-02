@@ -1,19 +1,35 @@
 <?php
 namespace Abc\File;
 
-use Gaufrette\Exception\FileAlreadyExists;
-
 interface DistributionManagerInterface
 {
 
     /**
-     * @param \Gaufrette\File   $file
-     * @param LocationInterface $location
-     * @param boolean           $overwrite Whether to overwrite the file if exists
-     * @throws FileAlreadyExists When file already exists and overwrite is false
-     * @throws \RuntimeException When for any reason content could not be written
+     * Distributes file A to file B
      *
-     * @return integer The number of bytes that were written into the file
+     * @param FileInterface $sourceFile
+     * @param FileInterface $targetFile
+     * @param boolean       $overwrite
+     * @return
      */
-    public function distribute(\Gaufrette\File $file, LocationInterface $location, $overwrite);
+    public function copyFile(FileInterface $sourceFile, FileInterface $targetFile, $overwrite);
+
+
+    /**
+     * Distributes file to a location
+     *
+     * @param FileInterface     $file
+     * @param LocationInterface $location
+     * @return FileInterface
+     */
+    public function distribute(FileInterface $file, LocationInterface $location);
+
+
+    /**
+     * Creates new file
+     *
+     * @param LocationInterface $location
+     * @return FileInterface
+     */
+    public function createFile(LocationInterface $location);
 } 
