@@ -2,9 +2,6 @@
 namespace Abc\File;
 
 
-use Abc\File\LocationInterface;
-use Gaufrette\File;
-
 abstract class DistributionClientIntegrationTest extends \PHPUnit_Framework_TestCase
 {
     protected $baseTestUrl = '/tmp/';
@@ -20,40 +17,27 @@ abstract class DistributionClientIntegrationTest extends \PHPUnit_Framework_Test
 
     public function testDistributeWithValidFileDistributesFile()
     {
-        $file = new File($this->testFile, $this->sourceLocation->getFileSystem());
+        $file = new File($this->testFile, $this->testFile, 14, $this->sourceLocation);
 
         $output = $this->subject->distribute($file, $this->destinationLocation);
-        $this->assertEquals(14, $output, 'Transferred file size is not as expected');
+        $this->assertInstanceOf('Abc\File\FileInterface', $output, 'Transferred file type is not as expected');
+        $this->assertEquals(14, $output->getFileSize(), 'Transferred file size is not as expected');
+        $this->assertEquals($this->testFile, $output->getPath(), 'Transferred file path is not as expected');
     }
 
-    public function testDistributeWithValidDataOverridesFile()
+    public function test_CopyFileWithValidFileDistributesFile()
     {
-        $this->destinationLocation->getFileSystem()->write($this->testFile, 'Test');
-        $file = new File($this->testFile, $this->sourceLocation->getFileSystem());
-
-        $output = $this->subject->distribute($file, $this->destinationLocation, true);
-        $this->assertEquals(14, $output, 'Transferred file size is not as expected');
+        $file       = new File($this->testFile, $this->testFile, 14, $this->sourceLocation);
+        $targetFile = new File($this->testFile, $this->testFile, 14, $this->destinationLocation);
+        $result     = $this->subject->copyFile($file, $targetFile);
+        $this->assertGreaterThan(0, $result);
     }
 
-    /**
-     * @expectedException \Gaufrette\Exception\FileAlreadyExists
-     */
-    public function testDistributeWithExistingFileThrowsException()
+    public function testCreateFileCreatesEmptyFile()
     {
-        $this->destinationLocation->getFileSystem()->write($this->testFile, 'Test');
-        $file = new File($this->testFile, $this->sourceLocation->getFileSystem());
-
-        $this->subject->distribute($file, $this->destinationLocation);
+        $result = $this->subject->createFile($this->destinationLocation);
+        $this->assertInstanceOf('Abc\File\FileInterface', $result, 'Transferred file type is not as expected');
+        $this->assertEquals(0, $result->getFileSize(), 'Transferred file size is not as expected');
+        $this->assertNotEmpty($result->getPath(), 'Transferred file path is not as expected');
     }
-
-    /**
-     * @expectedException \Gaufrette\Exception\FileNotFound
-     */
-    public function testDistributeWithNonExistingFileThrowsException()
-    {
-        $file = new File($this->testFile . 'a', $this->sourceLocation->getFileSystem());
-
-        $this->subject->distribute($file, $this->destinationLocation);
-    }
-
-} 
+}

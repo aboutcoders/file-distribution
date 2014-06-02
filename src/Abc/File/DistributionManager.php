@@ -42,6 +42,7 @@ class DistributionManager implements DistributionManagerInterface
      * @param FileInterface $sourceFile
      * @param FileInterface $targetFile
      * @param boolean       $overwrite
+     * @return integer The number of bytes that were written into the file
      * @throws FileAlreadyExists When file already exists and overwrite is false
      */
     public function copyFile(FileInterface $sourceFile, FileInterface $targetFile, $overwrite = false)
@@ -50,7 +51,7 @@ class DistributionManager implements DistributionManagerInterface
         $targetFilesystem = $this->filesystemFactory->buildFilesystem($targetFile->getLocation());
         $file             = new File($sourceFile->getPath(), $sourceFilesystem);
 
-        $targetFilesystem->write($targetFile->getPath(), $file->getContent(), $overwrite);
+        return $targetFilesystem->write($targetFile->getPath(), $file->getContent(), $overwrite);
     }
 
     /**

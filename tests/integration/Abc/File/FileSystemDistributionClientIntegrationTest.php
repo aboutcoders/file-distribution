@@ -1,18 +1,19 @@
 <?php
 namespace Abc\File;
 
-
-use Abc\File\Location\FilesystemLocation;
-
 class FileSystemDistributionClientIntegrationTest extends DistributionClientIntegrationTest
 {
     protected function setUp()
     {
         parent::setUp();
-        $this->subject             = new DistributionManager();
-        $this->sourceFiles         = __DIR__ . '/../../../../fixtures/files/';
-        $this->sourceLocation      = new FilesystemLocation($this->sourceFiles);
-        $this->destinationLocation = new FilesystemLocation($this->baseTestUrl);
+        $this->subject        = new DistributionManager(new FilesystemFactory());
+        $this->sourceFiles    = __DIR__ . '/../../../fixtures/files/';
+        $this->sourceLocation = new Location();
+        $this->sourceLocation->setType(FilesystemType::Filesystem);
+        $this->sourceLocation->setUrl($this->sourceFiles);
+        $this->destinationLocation = new Location();
+        $this->destinationLocation->setType(FilesystemType::Filesystem);
+        $this->destinationLocation->setUrl($this->baseTestUrl);
     }
 
     protected function tearDown()
@@ -21,5 +22,23 @@ class FileSystemDistributionClientIntegrationTest extends DistributionClientInte
         @unlink($this->baseTestUrl . $this->testFile);
     }
 
+    /**
+     * @expectedException \Gaufrette\Exception\FileAlreadyExists
+     */
+    public function testDistributeWithExistingFileThrowsException()
+    {
+        touch($this->baseTestUrl . $this->testFile);
+        $file = new File($this->testFile, $this->testFile, 14, $this->sourceLocation);
+        $this->subject->distribute($file, $this->destinationLocation);
+    }
+
+    public function testCopyFileWithValidFileDistributesFile()
+    {
+        touch($this->baseTestUrl . $this->testFile);
+        $file       = new File($this->testFile, $this->testFile, 14, $this->sourceLocation);
+        $targetFile = new File($this->testFile, $this->testFile, 14, $this->destinationLocation);
+        $result     = $this->subject->copyFile($file, $targetFile, true);
+        $this->assertGreaterThan(0, $result);
+    }
 }
  
