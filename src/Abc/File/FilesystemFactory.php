@@ -9,6 +9,16 @@ use Gaufrette\Adapter\Local as LocalAdapter;
 
 class FilesystemFactory
 {
+    /**
+     * @param LocationInterface $location
+     * @throws FilesystemException
+     * @return Filesystem
+     */
+    public function buildFilesystem(LocationInterface $location)
+    {
+        return self::build($location->getType(), $location->getUrl(), $location->getProperties());
+    }
+
     public static function build($type, $path, $options = array())
     {
 

@@ -2,13 +2,18 @@
 
 namespace Abc\File;
 
-use Abc\File\Exception\FilesystemException;
 use Gaufrette\Exception\FileAlreadyExists;
 use Gaufrette\File;
-use Gaufrette\Filesystem;
 
 class DistributionManager implements DistributionManagerInterface
 {
+    /** @var FilesystemFactory */
+    protected $filesystemFactory;
+
+    function __construct(FilesystemFactory $filesystemFactory)
+    {
+        $this->filesystemFactory = $filesystemFactory;
+    }
 
     /**
      * Distributes file to a location
@@ -20,23 +25,15 @@ class DistributionManager implements DistributionManagerInterface
      */
     public function distribute(FileInterface $file, LocationInterface $location)
     {
-        $sourceFilesystem = $this->buildFilesystem($file->getLocation());
-        $targetFilesystem = $this->buildFilesystem($location);
+        $sourceFilesystem = $this->filesystemFactory->buildFilesystem($file->getLocation());
+        $targetFilesystem = $this->filesystemFactory->buildFilesystem($location);
 
         $sourceFile = new File($file->getPath(), $sourceFilesystem);
-        $result     = $targetFilesystem->write($file->getPath(), $sourceFile->getContent());
+
+        $result = $targetFilesystem->write($file->getPath(), $sourceFile->getContent());
+
         $targetFile = new \Abc\File\File($sourceFile->getName(), $sourceFile->getKey(), $result);
         return $targetFile;
-    }
-
-    /**
-     * @param LocationInterface $location
-     * @throws FilesystemException
-     * @return Filesystem
-     */
-    private function buildFilesystem(LocationInterface $location)
-    {
-        return FilesystemFactory::build($location->getType(), $location->getUrl(), $location->getProperties());
     }
 
     /**
@@ -47,10 +44,10 @@ class DistributionManager implements DistributionManagerInterface
      * @param boolean       $overwrite
      * @throws FileAlreadyExists When file already exists and overwrite is false
      */
-    public function copyFile(FileInterface $sourceFile, FileInterface $targetFile, $overwrite)
+    public function copyFile(FileInterface $sourceFile, FileInterface $targetFile, $overwrite = false)
     {
-        $sourceFilesystem = $this->buildFilesystem($sourceFile->getLocation());
-        $targetFilesystem = $this->buildFilesystem($targetFile->getLocation());
+        $sourceFilesystem = $this->filesystemFactory->buildFilesystem($sourceFile->getLocation());
+        $targetFilesystem = $this->filesystemFactory->buildFilesystem($targetFile->getLocation());
         $file             = new File($sourceFile->getPath(), $sourceFilesystem);
 
         $targetFilesystem->write($targetFile->getPath(), $file->getContent(), $overwrite);
@@ -64,7 +61,7 @@ class DistributionManager implements DistributionManagerInterface
      */
     public function createFile(LocationInterface $location)
     {
-        $targetFilesystem = $this->buildFilesystem($location);
+        $targetFilesystem = $this->filesystemFactory->buildFilesystem($location);
         $file             = $targetFilesystem->createFile(uniqid());
         $targetFile       = new \Abc\File\File($file->getName(), $file->getKey(), $file->getSize());
         return $targetFile;
