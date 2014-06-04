@@ -8,7 +8,7 @@ class Location implements LocationInterface
     /** @var string */
     protected $type;
     /** @var string */
-    protected $url;
+    protected $path;
     /** @var array */
     protected $properties;
 
@@ -31,17 +31,17 @@ class Location implements LocationInterface
     /**
      * @return string
      */
-    public function getUrl()
+    public function getPath()
     {
-        return $this->url;
+        return $this->path;
     }
 
     /**
-     * @param string $url
+     * @param string $path
      */
-    public function setUrl($url)
+    public function setPath($path)
     {
-        $this->url = $url;
+        $this->path = $path;
     }
 
     /**

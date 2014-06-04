@@ -10,10 +10,10 @@ class FileSystemDistributionClientIntegrationTest extends DistributionClientInte
         $this->sourceFiles    = __DIR__ . '/../../../fixtures/files/';
         $this->sourceLocation = new Location();
         $this->sourceLocation->setType(FilesystemType::Filesystem);
-        $this->sourceLocation->setUrl($this->sourceFiles);
+        $this->sourceLocation->setPath($this->sourceFiles);
         $this->destinationLocation = new Location();
         $this->destinationLocation->setType(FilesystemType::Filesystem);
-        $this->destinationLocation->setUrl($this->baseTestUrl);
+        $this->destinationLocation->setPath($this->baseTestUrl);
     }
 
     protected function tearDown()

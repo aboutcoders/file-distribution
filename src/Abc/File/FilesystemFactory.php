@@ -16,7 +16,7 @@ class FilesystemFactory
      */
     public function buildFilesystem(LocationInterface $location)
     {
-        return self::build($location->getType(), $location->getUrl(), $location->getProperties());
+        return self::build($location->getType(), $location->getPath(), $location->getProperties());
     }
 
     public static function build($type, $path, $options = array())

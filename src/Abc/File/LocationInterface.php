@@ -19,12 +19,12 @@ interface LocationInterface
     /**
      * @return string
      */
-    public function getUrl();
+    public function getPath();
 
     /**
-     * @param string $url
+     * @param string $path
      */
-    public function setUrl($url);
+    public function setPath($path);
 
     /**
      * @return array

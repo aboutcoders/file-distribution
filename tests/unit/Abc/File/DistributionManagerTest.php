@@ -105,7 +105,7 @@ class DistributionManagerTest extends \PHPUnit_Framework_TestCase
             ->method('getType')
             ->will($this->returnValue($type));
         $location->expects($this->any())
-            ->method('getUrl')
+            ->method('getPath')
             ->will($this->returnValue($url));
         $location->expects($this->any())
             ->method('getProperties')
