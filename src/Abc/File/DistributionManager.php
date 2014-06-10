@@ -67,4 +67,19 @@ class DistributionManager implements DistributionManagerInterface
         $targetFile       = new \Abc\File\File($file->getName(), $file->getKey(), $file->getSize());
         return $targetFile;
     }
+
+    /**
+     * @param string $directoryName
+     * @return LocationInterface
+     */
+    public function createLocation($directoryName)
+    {
+        $location = new Location();
+        $location->setPath($directoryName);
+        $location->setType(FilesystemType::Filesystem);
+
+        return $location;
+    }
+
+
 }

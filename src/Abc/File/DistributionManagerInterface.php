@@ -32,4 +32,10 @@ interface DistributionManagerInterface
      * @return FileInterface
      */
     public function createFile(LocationInterface $location);
+
+    /**
+     * @param string $directoryName
+     * @return LocationInterface
+     */
+    public function createLocation($directoryName);
 } 
