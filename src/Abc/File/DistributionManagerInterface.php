@@ -34,8 +34,9 @@ interface DistributionManagerInterface
     public function createFile(LocationInterface $location);
 
     /**
-     * @param string $directoryName
+     * @param LocationInterface $location
+     * @param string            $directoryName
      * @return LocationInterface
      */
-    public function createLocation($directoryName);
+    public function createLocation(LocationInterface $location, $directoryName);
 } 

@@ -69,15 +69,20 @@ class DistributionManager implements DistributionManagerInterface
     }
 
     /**
-     * @param string $directoryName
+     * @param LocationInterface $location
+     * @param string            $directoryName
      * @return LocationInterface
      */
-    public function createLocation($directoryName)
+    public function createLocation(LocationInterface $location, $directoryName)
     {
-        $location = new Location();
         $location->setPath($directoryName);
         $location->setType(FilesystemType::Filesystem);
+        $location->setProperties(array('create' => true));
 
+        $targetFilesystem = $this->filesystemFactory->buildFilesystem($location);
+        if (!$targetFilesystem->has($location->getPath())) {
+            $targetFilesystem->write('.init', '');
+        }
         return $location;
     }
 
