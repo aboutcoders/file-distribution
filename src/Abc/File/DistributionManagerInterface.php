@@ -39,4 +39,13 @@ interface DistributionManagerInterface
      * @return LocationInterface
      */
     public function createLocation(LocationInterface $location, $directoryName);
+
+
+    /**
+     * Deletes file from a location
+     *
+     * @param FileInterface $file
+     * @return boolean
+     */
+    public function delete(FileInterface $file);
 } 

@@ -3,6 +3,7 @@ namespace Abc\File;
 
 
 use Gaufrette\Exception\FileAlreadyExists;
+use Gaufrette\Exception\FileNotFound;
 
 class DistributionManagerTest extends \PHPUnit_Framework_TestCase
 {
@@ -91,6 +92,47 @@ class DistributionManagerTest extends \PHPUnit_Framework_TestCase
         $result         = $this->subject->createFile($targetLocation);
         $this->assertInstanceOf('Abc\File\File', $result);
     }
+
+    public function testDeleteFileWithValidFile()
+    {
+        $targetLocation = $this->getLocationExpectations(FilesystemType::Filesystem, $this->baseTestUrl);
+        $file           = new File('testFileToDelete.txt', '/delete/', 1, $targetLocation);
+
+        $this->filesystem->expects($this->any())
+            ->method('delete')
+            ->will($this->returnValue(true));
+
+        $this->filesystemFactory->expects($this->any())
+            ->method('buildFilesystem')
+            ->will($this->returnValue($this->filesystem));
+
+        $this->subject = new DistributionManager($this->filesystemFactory);
+
+        $result = $this->subject->delete($file);
+        $this->assertTrue($result);
+    }
+
+    /**
+     * @expectedException \Gaufrette\Exception\FileNotFound
+     */
+    public function testDeleteFileWithNonExistingFileThrowsException()
+    {
+        $targetLocation = $this->getLocationExpectations(FilesystemType::Filesystem, $this->baseTestUrl);
+        $file           = new File('testFileToDelete.txt', '/delete/', 1, $targetLocation);
+
+        $this->filesystem->expects($this->any())
+            ->method('delete')
+            ->will($this->throwException(new FileNotFound($file->getPath())));
+
+        $this->filesystemFactory->expects($this->any())
+            ->method('buildFilesystem')
+            ->will($this->returnValue($this->filesystem));
+
+        $this->subject = new DistributionManager($this->filesystemFactory);
+
+        $this->subject->delete($file);
+    }
+
 
     /**
      * @param string $type

@@ -40,5 +40,16 @@ class FileSystemDistributionClientIntegrationTest extends DistributionClientInte
         $result     = $this->subject->copyFile($file, $targetFile, true);
         $this->assertGreaterThan(0, $result);
     }
+
+    public function testDeleteFileRemovesFile()
+    {
+        $fileToDelete = 'deleteThisFile.txt';
+        touch($this->baseTestUrl . $fileToDelete);
+
+        $file   = new File($fileToDelete, $fileToDelete, 14, $this->destinationLocation);
+        $result = $this->subject->delete($file);
+        $this->assertTrue($result, 'Result of deletion is not as expected');
+        $this->assertFileNotExists($fileToDelete, 'File was not deleted');
+    }
 }
  

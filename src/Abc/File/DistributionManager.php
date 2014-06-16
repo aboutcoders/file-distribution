@@ -86,5 +86,17 @@ class DistributionManager implements DistributionManagerInterface
         return $location;
     }
 
+    /**
+     * Deletes file from a location
+     *
+     * @param FileInterface $file
+     * @return boolean
+     */
+    public function delete(FileInterface $file)
+    {
+        $filesystem = $this->filesystemFactory->buildFilesystem($file->getLocation());
+        return $filesystem->delete($file->getPath());
+    }
+
 
 }
