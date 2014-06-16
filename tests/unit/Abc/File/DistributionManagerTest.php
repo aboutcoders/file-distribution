@@ -133,6 +133,24 @@ class DistributionManagerTest extends \PHPUnit_Framework_TestCase
         $this->subject->delete($file);
     }
 
+    public function testExistsWithExistingFileReturnsTrue()
+    {
+        $targetLocation = $this->getLocationExpectations(FilesystemType::Filesystem, $this->baseTestUrl);
+        $file           = new File('testFileToDelete.txt', '/delete/', 1, $targetLocation);
+
+        $this->filesystem->expects($this->any())
+            ->method('has')
+            ->will($this->returnValue(true));
+
+        $this->filesystemFactory->expects($this->any())
+            ->method('buildFilesystem')
+            ->will($this->returnValue($this->filesystem));
+
+        $this->subject = new DistributionManager($this->filesystemFactory);
+
+        $result = $this->subject->exists($file);
+        $this->assertTrue($result);
+    }
 
     /**
      * @param string $type
