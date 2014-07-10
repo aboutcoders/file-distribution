@@ -18,12 +18,12 @@ interface FileInterface
     /**
      * @return FilesystemInterface
      */
-    public function getLocation();
+    public function getFilesystem();
 
     /**
-     * @param FilesystemInterface $location
+     * @param FilesystemInterface $filesystem
      */
-    public function setLocation(FilesystemInterface $location);
+    public function setFilesystem(FilesystemInterface $filesystem);
 
     /**
      * @return int

@@ -8,7 +8,7 @@ use Gaufrette\Exception\FileNotFound;
 class DistributionManagerTest extends \PHPUnit_Framework_TestCase
 {
     protected $baseTestUrl = '/tmp/';
-    protected $testFile    = 'test1.txt';
+    protected $testFile = 'test1.txt';
     protected $sourceFiles;
     protected $filesystemFactory;
     /** @var DistributionManager */
@@ -36,11 +36,11 @@ class DistributionManagerTest extends \PHPUnit_Framework_TestCase
 
         $this->subject = new DistributionManager($this->filesystemFactory);
 
-        $sourceLocation = $this->getLocationExpectations(FilesystemType::Filesystem, $this->sourceFiles);
-        $file           = new File('test1.txt', $this->testFile, 14, $sourceLocation);
-        $targetLocation = $this->getLocationExpectations(FilesystemType::Filesystem, $this->baseTestUrl);
+        $sourceFilesystem = $this->getLocationExpectations(FilesystemType::Filesystem, $this->sourceFiles);
+        $file             = new File('test1.txt', $this->testFile, 14, $sourceFilesystem);
+        $targetFilesystem = $this->getLocationExpectations(FilesystemType::Filesystem, $this->baseTestUrl);
 
-        $output = $this->subject->distribute($file, $targetLocation);
+        $output = $this->subject->distribute($file, $targetFilesystem);
         $this->assertInstanceOf('Abc\File\FileInterface', $output, 'Result type is not as expected');
     }
 
@@ -49,11 +49,11 @@ class DistributionManagerTest extends \PHPUnit_Framework_TestCase
         $this->filesystemFactory->expects($this->any())
             ->method('buildFilesystem')
             ->will($this->returnValue($this->filesystem));
-        $this->subject  = new DistributionManager($this->filesystemFactory);
-        $sourceLocation = $this->getLocationExpectations(FilesystemType::Filesystem, $this->sourceFiles);
-        $targetLocation = $this->getLocationExpectations(FilesystemType::Filesystem, $this->baseTestUrl);
-        $sourceFile     = new File('test1.txt', $this->testFile, 14, $sourceLocation);
-        $targetFile     = new File('test1.txt', $this->testFile, 14, $targetLocation);
+        $this->subject    = new DistributionManager($this->filesystemFactory);
+        $sourceFilesystem = $this->getLocationExpectations(FilesystemType::Filesystem, $this->sourceFiles);
+        $targetFilesystem = $this->getLocationExpectations(FilesystemType::Filesystem, $this->baseTestUrl);
+        $sourceFile       = new File('test1.txt', $this->testFile, 14, $sourceFilesystem);
+        $targetFile       = new File('test1.txt', $this->testFile, 14, $targetFilesystem);
 
         $this->subject->copyFile($sourceFile, $targetFile);
     }
@@ -64,10 +64,10 @@ class DistributionManagerTest extends \PHPUnit_Framework_TestCase
     public function testCopyFileWithExistingFileThrowsException()
     {
         $filesystemFactory = $this->getMockBuilder('Abc\File\FilesystemFactory')->disableOriginalConstructor()->getMock();
-        $sourceLocation    = $this->getLocationExpectations(FilesystemType::Filesystem, $this->sourceFiles);
-        $targetLocation    = $this->getLocationExpectations(FilesystemType::Filesystem, $this->sourceFiles);
-        $sourceFile        = new File('test1.txt', $this->testFile, 14, $sourceLocation);
-        $targetFile        = new File('test1.txt', $this->testFile, 14, $targetLocation);
+        $sourceFilesystem  = $this->getLocationExpectations(FilesystemType::Filesystem, $this->sourceFiles);
+        $targetFilesystem  = $this->getLocationExpectations(FilesystemType::Filesystem, $this->sourceFiles);
+        $sourceFile        = new File('test1.txt', $this->testFile, 14, $sourceFilesystem);
+        $targetFile        = new File('test1.txt', $this->testFile, 14, $targetFilesystem);
         $sourceFilesystem  = $this->getMockBuilder('Gaufrette\Filesystem')->disableOriginalConstructor()->getMock();
 
         $sourceFilesystem->expects($this->any())
@@ -87,16 +87,16 @@ class DistributionManagerTest extends \PHPUnit_Framework_TestCase
             ->method('buildFilesystem')
             ->will($this->returnValue($this->filesystem));
 
-        $this->subject  = new DistributionManager($this->filesystemFactory);
-        $targetLocation = $this->getLocationExpectations(FilesystemType::Filesystem, $this->baseTestUrl);
-        $result         = $this->subject->createFile($targetLocation);
+        $this->subject    = new DistributionManager($this->filesystemFactory);
+        $targetFilesystem = $this->getLocationExpectations(FilesystemType::Filesystem, $this->baseTestUrl);
+        $result           = $this->subject->createFile($targetFilesystem);
         $this->assertInstanceOf('Abc\File\File', $result);
     }
 
     public function testDeleteFileWithValidFile()
     {
-        $targetLocation = $this->getLocationExpectations(FilesystemType::Filesystem, $this->baseTestUrl);
-        $file           = new File('testFileToDelete.txt', '/delete/', 1, $targetLocation);
+        $targetFilesystem = $this->getLocationExpectations(FilesystemType::Filesystem, $this->baseTestUrl);
+        $file             = new File('testFileToDelete.txt', '/delete/', 1, $targetFilesystem);
 
         $this->filesystem->expects($this->any())
             ->method('delete')
@@ -117,8 +117,8 @@ class DistributionManagerTest extends \PHPUnit_Framework_TestCase
      */
     public function testDeleteFileWithNonExistingFileThrowsException()
     {
-        $targetLocation = $this->getLocationExpectations(FilesystemType::Filesystem, $this->baseTestUrl);
-        $file           = new File('testFileToDelete.txt', '/delete/', 1, $targetLocation);
+        $targetFilesystem = $this->getLocationExpectations(FilesystemType::Filesystem, $this->baseTestUrl);
+        $file             = new File('testFileToDelete.txt', '/delete/', 1, $targetFilesystem);
 
         $this->filesystem->expects($this->any())
             ->method('delete')
@@ -135,8 +135,8 @@ class DistributionManagerTest extends \PHPUnit_Framework_TestCase
 
     public function testExistsWithExistingFileReturnsTrue()
     {
-        $targetLocation = $this->getLocationExpectations(FilesystemType::Filesystem, $this->baseTestUrl);
-        $file           = new File('testFileToDelete.txt', '/delete/', 1, $targetLocation);
+        $targetFilesystem = $this->getLocationExpectations(FilesystemType::Filesystem, $this->baseTestUrl);
+        $file             = new File('testFileToDelete.txt', '/delete/', 1, $targetFilesystem);
 
         $this->filesystem->expects($this->any())
             ->method('has')
@@ -170,6 +170,7 @@ class DistributionManagerTest extends \PHPUnit_Framework_TestCase
         $location->expects($this->any())
             ->method('getProperties')
             ->will($this->returnValue($properties));
+
         return $location;
     }
 
@@ -183,6 +184,7 @@ class DistributionManagerTest extends \PHPUnit_Framework_TestCase
         $file->expects($this->any())
             ->method('getName')
             ->will($this->returnValue($this->testFile));
+
         return $file;
     }
 
@@ -192,14 +194,15 @@ class DistributionManagerTest extends \PHPUnit_Framework_TestCase
      */
     protected function getFilesystemExpectations($file)
     {
-        $sourceFilesystem = $this->getMockBuilder('Gaufrette\Filesystem')->disableOriginalConstructor()->getMock();
-        $sourceFilesystem->expects($this->any())
+        $filesystem = $this->getMockBuilder('Gaufrette\Filesystem')->disableOriginalConstructor()->getMock();
+        $filesystem->expects($this->any())
             ->method('write')
             ->will($this->returnValue(1));
-        $sourceFilesystem->expects($this->any())
+        $filesystem->expects($this->any())
             ->method('createFile')
             ->will($this->returnValue($file));
-        return $sourceFilesystem;
+
+        return $filesystem;
     }
 }
  

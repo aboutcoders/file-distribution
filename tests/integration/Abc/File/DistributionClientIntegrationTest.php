@@ -11,15 +11,15 @@ abstract class DistributionClientIntegrationTest extends \PHPUnit_Framework_Test
     /** @var DistributionManager */
     protected $subject;
     /** @var FilesystemInterface */
-    protected $destinationLocation;
+    protected $destinationFilesystem;
     /** @var FilesystemInterface */
-    protected $sourceLocation;
+    protected $sourceFilesystem;
 
     public function testDistributeWithValidFileDistributesFile()
     {
-        $file = new File($this->testFile, $this->testFile, 14, $this->sourceLocation);
+        $file = new File($this->testFile, $this->testFile, 14, $this->sourceFilesystem);
 
-        $output = $this->subject->distribute($file, $this->destinationLocation);
+        $output = $this->subject->distribute($file, $this->destinationFilesystem);
         $this->assertInstanceOf('Abc\File\FileInterface', $output, 'Transferred file type is not as expected');
         $this->assertEquals(14, $output->getFileSize(), 'Transferred file size is not as expected');
         $this->assertEquals($this->testFile, $output->getPath(), 'Transferred file path is not as expected');
@@ -27,15 +27,15 @@ abstract class DistributionClientIntegrationTest extends \PHPUnit_Framework_Test
 
     public function test_CopyFileWithValidFileDistributesFile()
     {
-        $file       = new File($this->testFile, $this->testFile, 14, $this->sourceLocation);
-        $targetFile = new File($this->testFile, $this->testFile, 14, $this->destinationLocation);
+        $file       = new File($this->testFile, $this->testFile, 14, $this->sourceFilesystem);
+        $targetFile = new File($this->testFile, $this->testFile, 14, $this->destinationFilesystem);
         $result     = $this->subject->copyFile($file, $targetFile);
         $this->assertGreaterThan(0, $result);
     }
 
     public function testCreateFileCreatesEmptyFile()
     {
-        $result = $this->subject->createFile($this->destinationLocation);
+        $result = $this->subject->createFile($this->destinationFilesystem);
         $this->assertInstanceOf('Abc\File\FileInterface', $result, 'Transferred file type is not as expected');
         $this->assertEquals(0, $result->getFileSize(), 'Transferred file size is not as expected');
         $this->assertNotEmpty($result->getPath(), 'Transferred file path is not as expected');

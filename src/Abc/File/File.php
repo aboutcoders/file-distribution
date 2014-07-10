@@ -9,7 +9,7 @@ class File implements FileInterface
     /** @var string */
     protected $path;
     /** @var FilesystemInterface */
-    protected $location;
+    protected $filesystem;
     /** @var int */
     protected $fileSize;
 
@@ -17,14 +17,14 @@ class File implements FileInterface
      * @param string            $name
      * @param string            $path
      * @param int               $fileSize
-     * @param FilesystemInterface $location
+     * @param FilesystemInterface $filesystem
      */
-    function __construct($name, $path, $fileSize, $location = null)
+    function __construct($name, $path, $fileSize, $filesystem = null)
     {
         $this->name     = $name;
         $this->path     = $path;
         $this->fileSize = $fileSize;
-        $this->location = $location;
+        $this->filesystem = $filesystem;
     }
 
     /**
@@ -54,17 +54,17 @@ class File implements FileInterface
     /**
      * {@inheritdoc}
      */
-    public function getLocation()
+    public function getFilesystem()
     {
-        return $this->location;
+        return $this->filesystem;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function setLocation(FilesystemInterface $location)
+    public function setFilesystem(FilesystemInterface $filesystem)
     {
-        $this->location = $location;
+        $this->filesystem = $filesystem;
     }
 
     /**

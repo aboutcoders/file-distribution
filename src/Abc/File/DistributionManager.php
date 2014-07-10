@@ -21,10 +21,10 @@ class DistributionManager implements DistributionManagerInterface
     /**
      * {@inheritdoc}
      */
-    public function distribute(FileInterface $file, FilesystemInterface $location)
+    public function distribute(FileInterface $file, FilesystemInterface $filesystem)
     {
-        $sourceFilesystem = $this->filesystemFactory->buildFilesystem($file->getLocation());
-        $targetFilesystem = $this->filesystemFactory->buildFilesystem($location);
+        $sourceFilesystem = $this->filesystemFactory->buildFilesystem($file->getFilesystem());
+        $targetFilesystem = $this->filesystemFactory->buildFilesystem($filesystem);
 
         $sourceFile = new File($file->getPath(), $sourceFilesystem);
 
@@ -40,8 +40,8 @@ class DistributionManager implements DistributionManagerInterface
      */
     public function copyFile(FileInterface $sourceFile, FileInterface $targetFile, $overwrite = false)
     {
-        $sourceFilesystem = $this->filesystemFactory->buildFilesystem($sourceFile->getLocation());
-        $targetFilesystem = $this->filesystemFactory->buildFilesystem($targetFile->getLocation());
+        $sourceFilesystem = $this->filesystemFactory->buildFilesystem($sourceFile->getFilesystem());
+        $targetFilesystem = $this->filesystemFactory->buildFilesystem($targetFile->getFilesystem());
         $file             = new File($sourceFile->getPath(), $sourceFilesystem);
 
         return $targetFilesystem->write($targetFile->getPath(), $file->getContent(), $overwrite);
@@ -50,9 +50,9 @@ class DistributionManager implements DistributionManagerInterface
     /**
      * {@inheritdoc}
      */
-    public function createFile(FilesystemInterface $location)
+    public function createFile(FilesystemInterface $filesystem)
     {
-        $targetFilesystem = $this->filesystemFactory->buildFilesystem($location);
+        $targetFilesystem = $this->filesystemFactory->buildFilesystem($filesystem);
         $file             = $targetFilesystem->createFile(uniqid());
         $targetFile       = new \Abc\File\File($file->getName(), $file->getKey(), $file->getSize());
 
@@ -62,19 +62,19 @@ class DistributionManager implements DistributionManagerInterface
     /**
      * {@inheritdoc}
      */
-    public function createLocation(FilesystemInterface $location, $directoryName)
+    public function createFilesystem(FilesystemInterface $filesystem, $directoryName)
     {
-        $location->setPath($directoryName);
-        $location->setType(FilesystemType::Filesystem);
-        $location->setProperties(array('create' => true));
+        $filesystem->setPath($directoryName);
+        $filesystem->setType(FilesystemType::Filesystem);
+        $filesystem->setProperties(array('create' => true));
 
-        $targetFilesystem = $this->filesystemFactory->buildFilesystem($location);
-        if(!$targetFilesystem->has($location->getPath()))
+        $targetFilesystem = $this->filesystemFactory->buildFilesystem($filesystem);
+        if(!$targetFilesystem->has($filesystem->getPath()))
         {
             $targetFilesystem->write('.init', '');
         }
 
-        return $location;
+        return $filesystem;
     }
 
     /**
@@ -82,7 +82,7 @@ class DistributionManager implements DistributionManagerInterface
      */
     public function delete(FileInterface $file)
     {
-        $filesystem = $this->filesystemFactory->buildFilesystem($file->getLocation());
+        $filesystem = $this->filesystemFactory->buildFilesystem($file->getFilesystem());
 
         return $filesystem->delete($file->getPath());
     }
@@ -99,7 +99,7 @@ class DistributionManager implements DistributionManagerInterface
             return false;
         }
 
-        $filesystem = $this->filesystemFactory->buildFilesystem($file->getLocation());
+        $filesystem = $this->filesystemFactory->buildFilesystem($file->getFilesystem());
 
         return $filesystem->has($path);
     }

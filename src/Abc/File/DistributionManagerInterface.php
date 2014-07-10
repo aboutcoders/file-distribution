@@ -16,31 +16,31 @@ interface DistributionManagerInterface
 
 
     /**
-     * Distributes file to a location
+     * Distributes file to a filesystem
      *
      * @param FileInterface     $file
-     * @param FilesystemInterface $location
+     * @param FilesystemInterface $filesystem
      * @return FileInterface
      */
-    public function distribute(FileInterface $file, FilesystemInterface $location);
+    public function distribute(FileInterface $file, FilesystemInterface $filesystem);
 
     /**
      * Creates new file
      *
-     * @param FilesystemInterface $location
+     * @param FilesystemInterface $filesystem
      * @return FileInterface
      */
-    public function createFile(FilesystemInterface $location);
+    public function createFile(FilesystemInterface $filesystem);
 
     /**
-     * @param FilesystemInterface $location
+     * @param FilesystemInterface $filesystem
      * @param string            $directoryName
      * @return FilesystemInterface
      */
-    public function createLocation(FilesystemInterface $location, $directoryName);
+    public function createFilesystem(FilesystemInterface $filesystem, $directoryName);
 
     /**
-     * Deletes file from a location
+     * Deletes file from a filesystem
      *
      * @param FileInterface $file
      * @return boolean
@@ -48,7 +48,7 @@ interface DistributionManagerInterface
     public function delete(FileInterface $file);
 
     /**
-     * Deletes file from a location
+     * Deletes file from a filesystem
      *
      * @param FileInterface $file
      * @return boolean
