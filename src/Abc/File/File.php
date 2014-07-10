@@ -8,11 +8,17 @@ class File implements FileInterface
     protected $name;
     /** @var string */
     protected $path;
-    /** @var LocationInterface */
+    /** @var FilesystemInterface */
     protected $location;
     /** @var int */
     protected $fileSize;
 
+    /**
+     * @param string            $name
+     * @param string            $path
+     * @param int               $fileSize
+     * @param FilesystemInterface $location
+     */
     function __construct($name, $path, $fileSize, $location = null)
     {
         $this->name     = $name;
@@ -29,9 +35,8 @@ class File implements FileInterface
         return $this->name;
     }
 
-
     /**
-     * @return mixed
+     * {@inheritdoc}
      */
     public function getFileSize()
     {
@@ -39,7 +44,7 @@ class File implements FileInterface
     }
 
     /**
-     * @param mixed $fileSize
+     * {@inheritdoc}
      */
     public function setFileSize($fileSize)
     {
@@ -47,7 +52,7 @@ class File implements FileInterface
     }
 
     /**
-     * @return mixed
+     * {@inheritdoc}
      */
     public function getLocation()
     {
@@ -55,15 +60,15 @@ class File implements FileInterface
     }
 
     /**
-     * @param LocationInterface $location
+     * {@inheritdoc}
      */
-    public function setLocation(LocationInterface $location)
+    public function setLocation(FilesystemInterface $location)
     {
         $this->location = $location;
     }
 
     /**
-     * @return mixed
+     * {@inheritdoc}
      */
     public function getPath()
     {
@@ -71,12 +76,10 @@ class File implements FileInterface
     }
 
     /**
-     * @param string $path
+     * {@inheritdoc}
      */
     public function setPath($path)
     {
         $this->path = $path;
     }
-
-
 }

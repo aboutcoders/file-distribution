@@ -1,8 +1,7 @@
 <?php
 namespace Abc\File;
 
-
-class Location implements LocationInterface
+class Filesystem implements FilesystemInterface
 {
 
     /** @var string */
@@ -13,7 +12,7 @@ class Location implements LocationInterface
     protected $properties;
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getType()
     {
@@ -21,7 +20,7 @@ class Location implements LocationInterface
     }
 
     /**
-     * @param string $type
+     * {@inheritdoc}
      */
     public function setType($type)
     {
@@ -29,7 +28,7 @@ class Location implements LocationInterface
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getPath()
     {
@@ -37,7 +36,7 @@ class Location implements LocationInterface
     }
 
     /**
-     * @param string $path
+     * {@inheritdoc}
      */
     public function setPath($path)
     {
@@ -45,7 +44,7 @@ class Location implements LocationInterface
     }
 
     /**
-     * @return array
+     * {@inheritdoc}
      */
     public function getProperties()
     {
@@ -53,7 +52,7 @@ class Location implements LocationInterface
     }
 
     /**
-     * @param array $properties
+     * {@inheritdoc}
      */
     public function setProperties(array $properties)
     {

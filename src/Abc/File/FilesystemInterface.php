@@ -2,8 +2,7 @@
 
 namespace Abc\File;
 
-
-interface LocationInterface
+interface FilesystemInterface
 {
 
     /**

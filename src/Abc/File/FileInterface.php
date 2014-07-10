@@ -16,14 +16,14 @@ interface FileInterface
     public function setPath($path);
 
     /**
-     * @return LocationInterface
+     * @return FilesystemInterface
      */
     public function getLocation();
 
     /**
-     * @param LocationInterface $location
+     * @param FilesystemInterface $location
      */
-    public function setLocation(LocationInterface $location);
+    public function setLocation(FilesystemInterface $location);
 
     /**
      * @return int

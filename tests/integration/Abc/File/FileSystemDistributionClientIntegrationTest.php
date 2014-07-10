@@ -8,10 +8,10 @@ class FileSystemDistributionClientIntegrationTest extends DistributionClientInte
         parent::setUp();
         $this->subject        = new DistributionManager(new FilesystemFactory());
         $this->sourceFiles    = __DIR__ . '/../../../fixtures/files/';
-        $this->sourceLocation = new Location();
+        $this->sourceLocation = new Filesystem();
         $this->sourceLocation->setType(FilesystemType::Filesystem);
         $this->sourceLocation->setPath($this->sourceFiles);
-        $this->destinationLocation = new Location();
+        $this->destinationLocation = new Filesystem();
         $this->destinationLocation->setType(FilesystemType::Filesystem);
         $this->destinationLocation->setPath($this->baseTestUrl);
     }

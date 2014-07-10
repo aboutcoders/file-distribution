@@ -10,9 +10,9 @@ abstract class DistributionClientIntegrationTest extends \PHPUnit_Framework_Test
     protected $sourceFiles;
     /** @var DistributionManager */
     protected $subject;
-    /** @var LocationInterface */
+    /** @var FilesystemInterface */
     protected $destinationLocation;
-    /** @var LocationInterface */
+    /** @var FilesystemInterface */
     protected $sourceLocation;
 
     public function testDistributeWithValidFileDistributesFile()

@@ -62,7 +62,7 @@ class FilesystemFactoryTest extends \PHPUnit_Framework_TestCase
      */
     protected function getLocationExpectations($type, $url, $properties = array())
     {
-        $location = $this->getMock('Abc\File\LocationInterface');
+        $location = $this->getMock('Abc\File\FilesystemInterface');
         $location->expects($this->any())
             ->method('getType')
             ->will($this->returnValue($type));

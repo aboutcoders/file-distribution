@@ -5,7 +5,7 @@ interface DistributionManagerInterface
 {
 
     /**
-     * Distributes file A to file B
+     * Copies file A to file B
      *
      * @param FileInterface $sourceFile
      * @param FileInterface $targetFile
@@ -19,27 +19,25 @@ interface DistributionManagerInterface
      * Distributes file to a location
      *
      * @param FileInterface     $file
-     * @param LocationInterface $location
+     * @param FilesystemInterface $location
      * @return FileInterface
      */
-    public function distribute(FileInterface $file, LocationInterface $location);
-
+    public function distribute(FileInterface $file, FilesystemInterface $location);
 
     /**
      * Creates new file
      *
-     * @param LocationInterface $location
+     * @param FilesystemInterface $location
      * @return FileInterface
      */
-    public function createFile(LocationInterface $location);
+    public function createFile(FilesystemInterface $location);
 
     /**
-     * @param LocationInterface $location
+     * @param FilesystemInterface $location
      * @param string            $directoryName
-     * @return LocationInterface
+     * @return FilesystemInterface
      */
-    public function createLocation(LocationInterface $location, $directoryName);
-
+    public function createLocation(FilesystemInterface $location, $directoryName);
 
     /**
      * Deletes file from a location
