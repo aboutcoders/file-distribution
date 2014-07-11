@@ -3,7 +3,7 @@
 namespace Abc\File;
 
 use Abc\File\Exception\FilesystemException;
-use Gaufrette\Filesystem;
+use Gaufrette\Filesystem as GaufretteFilesystem;
 use Gaufrette\Adapter\Ftp as FtpAdapter;
 use Gaufrette\Adapter\Local as LocalAdapter;
 
@@ -12,7 +12,7 @@ class FilesystemFactory
     /**
      * @param FilesystemInterface $filesystem
      * @throws FilesystemException
-     * @return Filesystem
+     * @return GaufretteFilesystem
      */
     public function buildFilesystem(FilesystemInterface $filesystem)
     {
@@ -42,6 +42,6 @@ class FilesystemFactory
                 throw new FilesystemException(sprintf("Adapter %s does not exist", $type));
         }
 
-        return new Filesystem($adapter);
+        return new GaufretteFilesystem($adapter);
     }
 } 
