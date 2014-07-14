@@ -34,5 +34,4 @@ interface FilesystemInterface
      * @param array $properties
      */
     public function setProperties(array $properties);
-
 }
