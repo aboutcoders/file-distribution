@@ -3,10 +3,10 @@
 namespace Abc\File;
 
 use Gaufrette\Adapter;
-use Gaufrette\Filesystem;
+use Gaufrette\Filesystem as BaseFilesystem;
 use Symfony\Component\Filesystem\Filesystem as LocalFilesystem;
 
-class FilesystemClient extends Filesystem
+class FilesystemClient extends BaseFilesystem
 {
 
     /**
