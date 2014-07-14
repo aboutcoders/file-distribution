@@ -93,12 +93,14 @@ class FilesystemClient extends BaseFilesystem
     /**
      * Creates a directory on the filesystem
      *
-     * @param string $path
+     * @param string $path The path to the directory on the filesystem
      * @return void
+     * @throws \Gaufrette\Exception\FileAlreadyExists When file already exists and overwrite is false
+     * @throws \RuntimeException When for any reason content could not be written
      */
-    public function mkdir($name)
+    public function mkdir($path)
     {
-        $tmp = $name . '/.init';
+        $tmp = $path . '/.init';
         $this->write($tmp, '');
         $this->delete($tmp);
     }
