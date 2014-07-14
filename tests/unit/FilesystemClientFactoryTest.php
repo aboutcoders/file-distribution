@@ -43,16 +43,24 @@ class FilesystemClientFactoryTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider getValidArgs()
      */
-    public function testCreate($type, $path, $options, $expectedAdapterClass)
+    public function testCreateFromFilesystem($type, $path, $options, $expectedAdapterClass)
     {
         $filesystem = new Filesystem();
         $filesystem->setType($type);
         $filesystem->setPath($path);
         $filesystem->setProperties($options);
 
-        $client = $this->subject->create($filesystem);
+        $client = $this->subject->createFromFilesystem($filesystem);
         $this->assertInstanceOf('Abc\File\FilesystemClient', $client);
+    }
 
+    /**
+     * @dataProvider getValidArgs()
+     */
+    public function testCreate($type, $path, $options, $expectedAdapterClass)
+    {
+        $client = $this->subject->create($type, $path, $options);
+        $this->assertInstanceOf('Abc\File\FilesystemClient', $client);
     }
 
 
