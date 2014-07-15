@@ -1,7 +1,7 @@
 <?php
-namespace Abc\File;
+namespace Abc\Filesystem;
 
-class Filesystem implements FilesystemInterface
+class Definition implements DefinitionInterface
 {
 
     /** @var string */

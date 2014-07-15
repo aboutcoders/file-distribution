@@ -1,8 +1,8 @@
 <?php
 
-namespace Abc\File;
+namespace Abc\Filesystem;
 
-interface FilesystemInterface
+interface DefinitionInterface
 {
 
     /**
@@ -34,5 +34,4 @@ interface FilesystemInterface
      * @param array $properties
      */
     public function setProperties(array $properties);
-
 }
