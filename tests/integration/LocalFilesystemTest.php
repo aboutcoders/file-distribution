@@ -42,9 +42,9 @@ class LocalFilesystemTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateClientCreatesPathIfCreateIsTrue()
     {
-        $client = $this->subject->createClient('foo/bar', true);
+        $filesystem = $this->subject->createFilesystem('foo/bar', true);
 
-        $this->assertInstanceOf('Abc\Filesystem\Filesystem', $client);
+        $this->assertInstanceOf('Abc\Filesystem\Filesystem', $filesystem);
     }
 
 
@@ -53,7 +53,7 @@ class LocalFilesystemTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateClientThrowsInvalidArgumentException()
     {
-        $this->subject->createClient('foobar');
+        $this->subject->createFilesystem('foobar');
     }
 
     /**

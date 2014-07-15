@@ -44,7 +44,7 @@ class Filesystem extends BaseFilesystem
      * @return Filesystem
      * @throws \InvalidArgumentException If create is false and the directory with the given path does not exist
      */
-    public function createClient($path, $create = false)
+    public function createFilesystem($path, $create = false)
     {
         if(!$this->has($path))
         {
