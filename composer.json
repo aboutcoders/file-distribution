@@ -17,6 +17,7 @@
     ],
     "require": {
         "php": ">=5.3.3",
+        "psr/log": "~1.0",
         "symfony/filesystem": "~2",
         "knplabs/gaufrette": "0.2.*@dev"
     },

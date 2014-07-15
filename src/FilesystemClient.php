@@ -4,10 +4,64 @@ namespace Abc\File;
 
 use Gaufrette\Adapter;
 use Gaufrette\Filesystem as BaseFilesystem;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Symfony\Component\Filesystem\Filesystem as LocalFilesystem;
 
 class FilesystemClient extends BaseFilesystem
 {
+
+    /** @var AdapterFactoryInterface */
+    protected $adapterFactory;
+    /** @var FilesystemInterface */
+    protected $filesystem;
+    /** @var LoggerInterface */
+    protected $logger;
+
+
+    /**
+     * @param AdapterFactoryInterface $adapterFactory
+     * @param FilesystemInterface     $filesystem
+     * @param LoggerInterface|null        $logger
+     */
+    function __construct(AdapterFactoryInterface $adapterFactory, FilesystemInterface $filesystem, LoggerInterface $logger = null)
+    {
+        $this->adapterFactory = $adapterFactory;
+        $this->filesystem     = $filesystem;
+        $this->logger         = $logger == null ? new NullLogger() : $logger;
+
+        $properties = $filesystem->getProperties() == null ? array() : $filesystem->getProperties();
+
+        $adapter = $this->adapterFactory->create($filesystem->getType(), $filesystem->getPath(), $properties);
+
+        parent::__construct($adapter);
+    }
+
+
+    /**
+     * @param string $path The path to a directory on this filesystem
+     * @param bool $create Whether to create the directory if it does not exist
+     * @return FilesystemClient
+     * @throws \InvalidArgumentException If create is false and the directory with the given path does not exist
+     */
+    public function createClient($path, $create = false)
+    {
+        if(!$this->has($path))
+        {
+            if(!(bool)$create)
+            {
+                throw new \InvalidArgumentException(sprintf('The path "%s" does not exist not the filesystem and create is false', $path));
+            }
+
+            $this->mkdir($path);
+        }
+
+        $filesystem = clone $this->filesystem;
+        $filesystem->setPath($this->filesystem->getPath() . '/' . $this->stripSlashes($path));
+
+        return new FilesystemClient($this->adapterFactory, $filesystem, $this->logger);
+    }
+
 
     /**
      * Uploads the given file or directory to the filesystem
@@ -26,7 +80,7 @@ class FilesystemClient extends BaseFilesystem
             throw new \InvalidArgumentException(sprintf('The path "%s" does not specify a file or directory', $localPath));
         }
 
-        $remotePath = $this->cleanTrailingSlash($remotePath) . '/' . basename($localPath);
+        $remotePath = $this->stripTrailingSlash($remotePath) . '/' . basename($localPath);
 
         if($this->has($remotePath) && $overwrite)
         {
@@ -56,7 +110,7 @@ class FilesystemClient extends BaseFilesystem
      */
     public function download($remotePath = '/', $localDirectory, $mode = 0777)
     {
-        $remotePath = $this->cleanTrailingSlash($remotePath);
+        $remotePath = $this->stripTrailingSlash($remotePath);
 
         if(!is_dir($localDirectory))
         {
@@ -67,7 +121,7 @@ class FilesystemClient extends BaseFilesystem
             throw new \InvalidArgumentException(sprintf('The directory "%s" is not writable', $localDirectory));
         }
 
-        $localDirectory = $this->cleanTrailingSlash($localDirectory);
+        $localDirectory = $this->stripTrailingSlash($localDirectory);
 
         if(!$this->getAdapter()->isDirectory($remotePath))
         {
@@ -75,12 +129,7 @@ class FilesystemClient extends BaseFilesystem
         }
         else
         {
-            $filesystem = new FilesystemClient(new Adapter\Local($localDirectory, false, $mode));
-
-            if(basename($remotePath) != '')
-            {
-                $filesystem->mkdir(basename($remotePath));
-            }
+            $filesystem = new BaseFilesystem(new Adapter\Local($localDirectory, true, $mode));
 
             $keys = $this->listKeys($remotePath);
             foreach($keys['keys'] as $key)
@@ -94,15 +143,19 @@ class FilesystemClient extends BaseFilesystem
      * Creates a directory on the filesystem
      *
      * @param string $path The path to the directory on the filesystem
-     * @return void
+     * @return string the absolute path to the created directory
      * @throws \Gaufrette\Exception\FileAlreadyExists When file already exists and overwrite is false
      * @throws \RuntimeException When for any reason content could not be written
      */
     public function mkdir($path)
     {
+        $path = $this->stripTrailingSlash($path);
+
         $tmp = $path . '/.init';
         $this->write($tmp, '');
         $this->delete($tmp);
+
+        return $this->stripTrailingSlash($this->filesystem->getPath()) . '/' . $path;
     }
 
     /**
@@ -130,10 +183,34 @@ class FilesystemClient extends BaseFilesystem
     }
 
     /**
+     * @param $path
+     * @return string
+     */
+    public function stripSlashes($path)
+    {
+        return $this->stripLeadingSlash($this->stripTrailingSlash($path));
+    }
+
+    /**
      * @param string $path
      * @return string
      */
-    private function cleanTrailingSlash($path)
+    private function stripLeadingSlash($path)
+    {
+        $lastStr = substr($path, strlen($path) - 1);
+        if($lastStr == '/' || $lastStr == '\\')
+        {
+            return substr($path, 0, strlen($path) - 1);
+        }
+
+        return $path;
+    }
+
+    /**
+     * @param string $path
+     * @return string
+     */
+    private function stripTrailingSlash($path)
     {
         $lastStr = substr($path, strlen($path) - 1);
         if($lastStr == '/' || $lastStr == '\\')

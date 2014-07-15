@@ -7,13 +7,13 @@ use Gaufrette\File;
 
 class DistributionManager implements DistributionManagerInterface
 {
-    /** @var FilesystemClientFactory */
+    /** @var AdapterFactory */
     protected $filesystemFactory;
 
     /**
-     * @param FilesystemClientFactory $filesystemFactory
+     * @param AdapterFactory $filesystemFactory
      */
-    function __construct(FilesystemClientFactory $filesystemFactory)
+    function __construct(AdapterFactory $filesystemFactory)
     {
         $this->filesystemFactory = $filesystemFactory;
     }
