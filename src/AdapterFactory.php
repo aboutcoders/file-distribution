@@ -1,6 +1,6 @@
 <?php
 
-namespace Abc\File;
+namespace Abc\Filesystem;
 
 use Gaufrette\Adapter;
 use Gaufrette\Adapter\Ftp as FtpAdapter;

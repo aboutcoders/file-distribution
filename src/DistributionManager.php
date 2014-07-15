@@ -1,6 +1,6 @@
 <?php
 
-namespace Abc\File;
+namespace Abc\Filesystem;
 
 use Gaufrette\Exception\FileAlreadyExists;
 use Gaufrette\File;
@@ -21,7 +21,7 @@ class DistributionManager implements DistributionManagerInterface
     /**
      * {@inheritdoc}
      */
-    public function distribute(FileInterface $file, FilesystemInterface $filesystem)
+    public function distribute(FileInterface $file, DefinitionInterface $filesystem)
     {
         $sourceFilesystem = $this->filesystemFactory->buildFilesystem($file->getFilesystem());
         $targetFilesystem = $this->filesystemFactory->buildFilesystem($filesystem);
@@ -30,7 +30,7 @@ class DistributionManager implements DistributionManagerInterface
 
         $result = $targetFilesystem->write($file->getPath(), $sourceFile->getContent());
 
-        $targetFile = new \Abc\File\File($sourceFile->getName(), $sourceFile->getKey(), $result);
+        $targetFile = new \Abc\Filesystem\File($sourceFile->getName(), $sourceFile->getKey(), $result);
 
         return $targetFile;
     }
@@ -50,11 +50,11 @@ class DistributionManager implements DistributionManagerInterface
     /**
      * {@inheritdoc}
      */
-    public function createFile(FilesystemInterface $filesystem)
+    public function createFile(DefinitionInterface $filesystem)
     {
         $targetFilesystem = $this->filesystemFactory->buildFilesystem($filesystem);
         $file             = $targetFilesystem->createFile(uniqid());
-        $targetFile       = new \Abc\File\File($file->getName(), $file->getKey(), $file->getSize());
+        $targetFile       = new \Abc\Filesystem\File($file->getName(), $file->getKey(), $file->getSize());
 
         return $targetFile;
     }
@@ -62,7 +62,7 @@ class DistributionManager implements DistributionManagerInterface
     /**
      * {@inheritdoc}
      */
-    public function createFilesystem(FilesystemInterface $filesystem, $directoryName)
+    public function createFilesystem(DefinitionInterface $filesystem, $directoryName)
     {
         $filesystem->setPath($directoryName);
         $filesystem->setType(FilesystemType::Filesystem);

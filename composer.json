@@ -25,6 +25,6 @@
         "phpunit/phpunit": "~4"
     },
     "autoload": {
-        "psr-4": { "Abc\\File\\": "src" }
+        "psr-4": { "Abc\\Filesystem\\": "src" }
     }
 }

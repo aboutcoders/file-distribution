@@ -1,18 +1,18 @@
 <?php
 
-namespace Abc\File;
+namespace Abc\Filesystem;
 
 interface FileInterface
 {
     /**
-     * @return FilesystemInterface
+     * @return DefinitionInterface
      */
     public function getFilesystem();
 
     /**
-     * @param FilesystemInterface $filesystem
+     * @param DefinitionInterface $filesystem
      */
-    public function setFilesystem(FilesystemInterface $filesystem);
+    public function setFilesystem(DefinitionInterface $filesystem);
 
     /**
      * @return string

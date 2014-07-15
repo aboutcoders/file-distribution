@@ -1,15 +1,13 @@
 <?php
 
-namespace Abc\File;
+namespace Abc\Filesystem;
 
 use Gaufrette\Adapter\Local;
 use Symfony\Component\Filesystem\Filesystem as LocalFilesystem;
 
-class LocalFilesystemClientTest extends \PHPUnit_Framework_TestCase
+class LocalFilesystemTest extends \PHPUnit_Framework_TestCase
 {
-
-
-    /** @var FilesystemClient */
+    /** @var Filesystem */
     protected $subject;
     /** @var string */
     protected $path;
@@ -30,7 +28,7 @@ class LocalFilesystemClientTest extends \PHPUnit_Framework_TestCase
 
         mkdir($this->path);
 
-        $this->subject = $this->createClient($this->path);
+        $this->subject = $this->createFilesystem($this->path);
     }
 
     public function tearDown()
@@ -46,7 +44,7 @@ class LocalFilesystemClientTest extends \PHPUnit_Framework_TestCase
     {
         $client = $this->subject->createClient('foo/bar', true);
 
-        $this->assertInstanceOf('Abc\File\FilesystemClient', $client);
+        $this->assertInstanceOf('Abc\Filesystem\Filesystem', $client);
     }
 
 
@@ -151,7 +149,7 @@ class LocalFilesystemClientTest extends \PHPUnit_Framework_TestCase
 
     public function testDownloadWithFile()
     {
-        $subject = $this->createClient($this->fixtureDir);
+        $subject = $this->createFilesystem($this->fixtureDir);
 
         $subject->download('/foobar.txt', $this->path);
 
@@ -162,7 +160,7 @@ class LocalFilesystemClientTest extends \PHPUnit_Framework_TestCase
 
     public function testDownloadWithDirectoryAndWithRemotePath()
     {
-        $subject = $this->createClient($this->fixtureDir . '/..');
+        $subject = $this->createFilesystem($this->fixtureDir . '/..');
 
         $subject->download('test-directory', $this->path);
 
@@ -181,7 +179,7 @@ class LocalFilesystemClientTest extends \PHPUnit_Framework_TestCase
      */
     public function testDownloadWithDirectoryAndWithoutRemotePath($path)
     {
-        $subject = $this->createClient($this->fixtureDir);
+        $subject = $this->createFilesystem($this->fixtureDir);
 
         $subject->download($path, $this->path);
 
@@ -199,7 +197,7 @@ class LocalFilesystemClientTest extends \PHPUnit_Framework_TestCase
      */
     public function testDownloadThrowsFileNotFoundException()
     {
-        $subject = $this->createClient($this->fixtureDir);
+        $subject = $this->createFilesystem($this->fixtureDir);
 
         $subject->download('unknown', $this->path);
     }
@@ -212,19 +210,19 @@ class LocalFilesystemClientTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    private function createClient($path)
+    private function createFilesystem($path)
     {
-        return new FilesystemClient(new AdapterFactory(), $this->createFilesystem(FilesystemType::LOCAL, $path));
+        return new Filesystem(new AdapterFactory(), $this->createDefinition(FilesystemType::LOCAL, $path));
     }
 
 
-    private function createFilesystem($type, $path, array $options = array())
+    private function createDefinition($type, $path, array $options = array())
     {
-        $filesystem = new Filesystem();
-        $filesystem->setType($type);
-        $filesystem->setPath($path);
-        $filesystem->setProperties($options);
+        $definition = new Definition();
+        $definition->setType($type);
+        $definition->setPath($path);
+        $definition->setProperties($options);
 
-        return $filesystem;
+        return $definition;
     }
 }

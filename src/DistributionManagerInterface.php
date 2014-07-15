@@ -1,5 +1,5 @@
 <?php
-namespace Abc\File;
+namespace Abc\Filesystem;
 
 interface DistributionManagerInterface
 {
@@ -19,8 +19,8 @@ interface DistributionManagerInterface
      * Distributes file to a filesystem
      *
      * @param FileInterface     $file
-     * @param FilesystemInterface $filesystem
+     * @param DefinitionInterface $filesystem
      * @return FileInterface
      */
-    public function distribute(FileInterface $file, FilesystemInterface $filesystem);
+    public function distribute(FileInterface $file, DefinitionInterface $filesystem);
 } 

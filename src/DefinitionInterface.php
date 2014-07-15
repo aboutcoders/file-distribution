@@ -1,8 +1,8 @@
 <?php
 
-namespace Abc\File;
+namespace Abc\Filesystem;
 
-interface FilesystemInterface
+interface DefinitionInterface
 {
 
     /**

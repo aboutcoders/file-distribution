@@ -1,12 +1,12 @@
 <?php
-namespace Abc\File;
+namespace Abc\Filesystem;
 
 
 class File implements FileInterface
 {
     /** @var string */
     protected $path;
-    /** @var FilesystemInterface */
+    /** @var DefinitionInterface */
     protected $filesystem;
     /** @var int */
     protected $fileSize;
@@ -38,7 +38,7 @@ class File implements FileInterface
     /**
      * {@inheritdoc}
      */
-    public function setFilesystem(FilesystemInterface $filesystem)
+    public function setFilesystem(DefinitionInterface $filesystem)
     {
         $this->filesystem = $filesystem;
     }
