@@ -162,6 +162,14 @@ class Filesystem extends BaseFilesystem implements FilesystemInterface
     /**
      * {@inheritdoc}
      */
+    public function remove($path)
+    {
+        return $this->delete($path);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function mkdir($path)
     {
         $path = $this->stripTrailingSlash($path);

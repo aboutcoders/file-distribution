@@ -23,7 +23,6 @@ interface FilesystemInterface
      * @param Filesystem $targetFilesystem The filesystem where the data is copied to
      * @param string     $targetPath The path to a file or directory on the target filesystem
      * @throws \RuntimeException
-     * @throws \Exception
      */
     public function copyToFilesystem($path, Filesystem $targetFilesystem, $targetPath);
 
@@ -36,6 +35,7 @@ interface FilesystemInterface
      * @return void
      * @throws \Gaufrette\Exception\FileAlreadyExists If the file or directory already exists on the filesystem and overwrite is false
      * @throws \InvalidArgumentException If the file or directory specified by $localPath does not exist
+     * @throws \RuntimeException
      */
     public function upload($localPath, $remotePath, $overwrite = false);
 
@@ -48,6 +48,7 @@ interface FilesystemInterface
      * @return void
      * @throws \InvalidArgumentException If the local directory is not writable
      * @throws \Gaufrette\Exception\FileNotFound If the file or directory does not exist on the filesystem
+     * @throws \RuntimeException
      */
     public function download($remotePath = '/', $localPath, $mode = 0777);
 
@@ -61,7 +62,6 @@ interface FilesystemInterface
      */
     public function mkdir($path);
 
-
     /**
      * Whether the a file or directory exists
      *
@@ -69,4 +69,12 @@ interface FilesystemInterface
      * @return boolean
      */
     public function exists($path);
+
+    /**
+     * Deletes a file or directory
+     *
+     * @param string $path The path to the directory on the filesystem
+     * @throws \RuntimeException
+     */
+    public function remove($path);
 } 
