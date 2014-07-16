@@ -89,6 +89,17 @@ class Filesystem extends BaseFilesystem implements FilesystemInterface
     }
 
     /**
+     * Whether the a file or directory exists
+     *
+     * @param string $path The path to a directory on the filesystem
+     * @return boolean
+     */
+    public function exists($path)
+    {
+        return $this->has($path);
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function upload($localPath, $remotePath, $overwrite = false)
@@ -190,7 +201,7 @@ class Filesystem extends BaseFilesystem implements FilesystemInterface
      * @param $path
      * @return string
      */
-    public function stripSlashes($path)
+    private function stripSlashes($path)
     {
         return $this->stripLeadingSlash($this->stripTrailingSlash($path));
     }

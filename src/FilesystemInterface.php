@@ -60,4 +60,13 @@ interface FilesystemInterface
      * @throws \RuntimeException When for any reason content could not be written
      */
     public function mkdir($path);
+
+
+    /**
+     * Whether the a file or directory exists
+     *
+     * @param string $path The path to a directory on the filesystem
+     * @return boolean
+     */
+    public function exists($path);
 } 
