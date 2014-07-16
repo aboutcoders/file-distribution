@@ -1,9 +1,10 @@
 <?php
 
-
 namespace Abc\Filesystem;
 
-
+/**
+ * FilesystemInterface
+ */
 interface FilesystemInterface
 {
     /**
@@ -25,7 +26,6 @@ interface FilesystemInterface
      * @throws \Exception
      */
     public function copyToFilesystem($path, Filesystem $targetFilesystem, $targetPath);
-
 
     /**
      * Uploads a file or directory
