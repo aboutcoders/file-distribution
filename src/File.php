@@ -1,22 +1,34 @@
 <?php
 namespace Abc\Filesystem;
 
+use JMS\Serializer\Annotation\Type;
 
 class File implements FileInterface
 {
-    /** @var string */
+    /**
+     * @var string
+     * @Type("string")
+     */
     protected $path;
-    /** @var DefinitionInterface */
-    protected $filesystem;
-    /** @var int */
-    protected $fileSize;
+
+    /**
+     * @var DefinitionInterface
+     * @Type("Abc\Filesystem\Definition")
+     */
+    protected $definition;
+
+    /**
+     * @var
+     * @Type("integer")
+     */
+    protected $size;
 
     /**
      * {@inheritdoc}
      */
     public function getSize()
     {
-        return $this->fileSize;
+        return $this->size;
     }
 
     /**
@@ -24,7 +36,7 @@ class File implements FileInterface
      */
     public function setSize($bytes)
     {
-        $this->fileSize = $bytes;
+        $this->size = $bytes;
     }
 
     /**
@@ -32,7 +44,7 @@ class File implements FileInterface
      */
     public function getFilesystemDefinition()
     {
-        return $this->filesystem;
+        return $this->definition;
     }
 
     /**
@@ -40,7 +52,7 @@ class File implements FileInterface
      */
     public function setFilesystemDefinition(DefinitionInterface $definition)
     {
-        $this->filesystem = $definition;
+        $this->definition = $definition;
     }
 
     /**

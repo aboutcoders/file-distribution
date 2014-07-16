@@ -5,7 +5,7 @@ namespace Abc\Filesystem;
 interface FileInterface
 {
     /**
-     * @return DefinitionInterface
+     * @return DefinitionInterface|null
      */
     public function getFilesystemDefinition();
 

@@ -1,14 +1,26 @@
 <?php
 namespace Abc\Filesystem;
 
+use JMS\Serializer\Annotation\Type;
+
 class Definition implements DefinitionInterface
 {
 
-    /** @var string */
+    /**
+     * @var string
+     * @Type("string")
+     */
     protected $type;
-    /** @var string */
+
+    /**
+     * @var string
+     * @Type("string")
+     */
     protected $path;
-    /** @var array */
+
+    /**
+     * @var array
+     */
     protected $properties;
 
     /**
