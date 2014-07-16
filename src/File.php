@@ -30,7 +30,7 @@ class File implements FileInterface
     /**
      * {@inheritdoc}
      */
-    public function getFilesystem()
+    public function getFilesystemDefinition()
     {
         return $this->filesystem;
     }
@@ -38,9 +38,9 @@ class File implements FileInterface
     /**
      * {@inheritdoc}
      */
-    public function setFilesystem(DefinitionInterface $filesystem)
+    public function setFilesystemDefinition(DefinitionInterface $definition)
     {
-        $this->filesystem = $filesystem;
+        $this->filesystem = $definition;
     }
 
     /**

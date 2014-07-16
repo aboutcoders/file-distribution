@@ -23,7 +23,7 @@ class DistributionManager implements DistributionManagerInterface
      */
     public function distribute(FileInterface $file, DefinitionInterface $filesystem)
     {
-        $sourceFilesystem = $this->filesystemFactory->buildFilesystem($file->getFilesystem());
+        $sourceFilesystem = $this->filesystemFactory->buildFilesystem($file->getFilesystemDefinition());
         $targetFilesystem = $this->filesystemFactory->buildFilesystem($filesystem);
 
         $sourceFile = new File($file->getPath(), $sourceFilesystem);
@@ -40,8 +40,8 @@ class DistributionManager implements DistributionManagerInterface
      */
     public function copyFile(FileInterface $sourceFile, FileInterface $targetFile, $overwrite = false)
     {
-        $sourceFilesystem = $this->filesystemFactory->buildFilesystem($sourceFile->getFilesystem());
-        $targetFilesystem = $this->filesystemFactory->buildFilesystem($targetFile->getFilesystem());
+        $sourceFilesystem = $this->filesystemFactory->buildFilesystem($sourceFile->getFilesystemDefinition());
+        $targetFilesystem = $this->filesystemFactory->buildFilesystem($targetFile->getFilesystemDefinition());
         $file             = new File($sourceFile->getPath(), $sourceFilesystem);
 
         return $targetFilesystem->write($targetFile->getPath(), $file->getContent(), $overwrite);
@@ -82,7 +82,7 @@ class DistributionManager implements DistributionManagerInterface
      */
     public function delete(FileInterface $file)
     {
-        $filesystem = $this->filesystemFactory->buildFilesystem($file->getFilesystem());
+        $filesystem = $this->filesystemFactory->buildFilesystem($file->getFilesystemDefinition());
 
         return $filesystem->delete($file->getPath());
     }
@@ -99,7 +99,7 @@ class DistributionManager implements DistributionManagerInterface
             return false;
         }
 
-        $filesystem = $this->filesystemFactory->buildFilesystem($file->getFilesystem());
+        $filesystem = $this->filesystemFactory->buildFilesystem($file->getFilesystemDefinition());
 
         return $filesystem->has($path);
     }

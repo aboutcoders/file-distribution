@@ -7,12 +7,12 @@ interface FileInterface
     /**
      * @return DefinitionInterface
      */
-    public function getFilesystem();
+    public function getFilesystemDefinition();
 
     /**
-     * @param DefinitionInterface $filesystem
+     * @param DefinitionInterface $definition
      */
-    public function setFilesystem(DefinitionInterface $filesystem);
+    public function setFilesystemDefinition(DefinitionInterface $definition);
 
     /**
      * @return string
