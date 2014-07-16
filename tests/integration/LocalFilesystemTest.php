@@ -17,16 +17,17 @@ class LocalFilesystemTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->fixtureDir = dirname(__FILE__) . '/../fixtures/test-directory';
-        $this->path       = dirname(__FILE__) . '/../../build/unit/';
+        $this->path       = dirname(__FILE__) . '/../../build/unit/filesystem';
+
+        $filesystem = new LocalFilesystem;
 
         if(is_dir($this->path))
         {
-            $filesystem = new LocalFilesystem;
             $filesystem->remove($this->path);
         }
 
+        $filesystem->mkdir($this->path);
 
-        mkdir($this->path);
 
         $this->subject = $this->createFilesystem($this->path);
     }
@@ -59,16 +60,16 @@ class LocalFilesystemTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException \InvalidArgumentException
      */
-    public function testAddThrowsInvalidArgumentException()
+    public function testUploadThrowsInvalidArgumentException()
     {
-        $this->subject->upload('/path/to/nowhere');
+        $this->subject->upload('/path/to/nowhere', 'nowhere');
     }
 
-    public function testAddWithFile()
+    public function testUploadWithFile()
     {
         $path = $this->fixtureDir . DIRECTORY_SEPARATOR . 'foobar.txt';
 
-        $this->subject->upload($path);
+        $this->subject->upload($path, basename($path));
 
         $expectedCopiedFile = $this->path . DIRECTORY_SEPARATOR . 'foobar.txt';
 
@@ -76,7 +77,7 @@ class LocalFilesystemTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(file_get_contents($path), file_get_contents($expectedCopiedFile));
     }
 
-    public function testAddWithFileAndOverwrite()
+    public function testUploadWithFileAndOverwrite()
     {
         $filename = 'foobar.txt';
 
@@ -85,7 +86,7 @@ class LocalFilesystemTest extends \PHPUnit_Framework_TestCase
 
         $path = $this->fixtureDir . DIRECTORY_SEPARATOR . 'foobar.txt';
 
-        $this->subject->upload($path, null, true);
+        $this->subject->upload($path, basename($path), true);
 
         $expectedCopiedFile = $this->path . DIRECTORY_SEPARATOR . 'foobar.txt';
 
@@ -96,7 +97,7 @@ class LocalFilesystemTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException \Gaufrette\Exception\FileAlreadyExists
      */
-    public function testAddWithFileThrowsExceptionIfFileExists()
+    public function testUploadWithFileThrowsExceptionIfFileExists()
     {
         $filename = 'foobar.txt';
 
@@ -105,7 +106,7 @@ class LocalFilesystemTest extends \PHPUnit_Framework_TestCase
 
         $path = $this->fixtureDir . DIRECTORY_SEPARATOR . $filename;
 
-        $this->subject->upload($path);
+        $this->subject->upload($path, basename($path));
 
         $expectedCopiedFile = $this->path . DIRECTORY_SEPARATOR . 'foobar.txt';
 
@@ -114,11 +115,11 @@ class LocalFilesystemTest extends \PHPUnit_Framework_TestCase
     }
 
 
-    public function testAddWithDirectory()
+    public function testUploadWithDirectory()
     {
         $path = $this->fixtureDir;
 
-        $this->subject->upload($path);
+        $this->subject->upload($path, basename($path));
 
         $this->assertTrue(is_dir($this->path . '/test-directory'));
         $this->assertTrue(is_dir($this->path . '/test-directory/barfoo'));
@@ -130,11 +131,11 @@ class LocalFilesystemTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(file_exists($this->path . '/test-directory/foobar/foobar.txt'));
     }
 
-    public function testAddWithDirectoryAndTargetPath()
+    public function testUploadWithDirectoryAndTargetPath()
     {
         $path = $this->fixtureDir;
 
-        $this->subject->upload($path, 'foobar');
+        $this->subject->upload($path, 'foobar/test-directory');
 
         $this->assertTrue(is_dir($this->path . '/foobar/test-directory'));
         $this->assertTrue(is_dir($this->path . '/foobar/test-directory/barfoo'));
@@ -201,6 +202,25 @@ class LocalFilesystemTest extends \PHPUnit_Framework_TestCase
 
         $subject->download('unknown', $this->path);
     }
+
+
+    public function testCopyToFilesystem()
+    {
+        $subject          = $this->createFilesystem($this->fixtureDir);
+        $targetFilesystem = $this->createFilesystem($this->path);
+
+        $subject->copyToFilesystem('/', $targetFilesystem, 'new-directory');
+
+        $this->assertTrue(is_dir($this->path . '/new-directory'));
+        $this->assertTrue(is_dir($this->path . '/new-directory/barfoo'));
+        $this->assertTrue(is_dir($this->path . '/new-directory/foobar'));
+        $this->assertTrue(file_exists($this->path . '/new-directory/foobar.txt'));
+        $this->assertTrue(file_exists($this->path . '/new-directory/barfoo/barfoo'));
+        $this->assertTrue(file_exists($this->path . '/new-directory/barfoo/barfoo.txt'));
+        $this->assertTrue(file_exists($this->path . '/new-directory/foobar/foobar'));
+        $this->assertTrue(file_exists($this->path . '/new-directory/foobar/foobar.txt'));
+    }
+
 
     public static function getEmptyRemotePath()
     {

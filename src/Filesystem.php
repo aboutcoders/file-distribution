@@ -8,7 +8,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Symfony\Component\Filesystem\Filesystem as LocalFilesystem;
 
-class Filesystem extends BaseFilesystem
+class Filesystem extends BaseFilesystem implements FilesystemInterface
 {
 
     /** @var AdapterFactoryInterface */
@@ -22,7 +22,7 @@ class Filesystem extends BaseFilesystem
     /**
      * @param AdapterFactoryInterface $adapterFactory
      * @param DefinitionInterface     $definition
-     * @param LoggerInterface|null        $logger
+     * @param LoggerInterface|null    $logger
      */
     function __construct(AdapterFactoryInterface $adapterFactory, DefinitionInterface $definition, LoggerInterface $logger = null)
     {
@@ -39,10 +39,7 @@ class Filesystem extends BaseFilesystem
 
 
     /**
-     * @param string $path The path to a directory on this filesystem
-     * @param bool $create Whether to create the directory if it does not exist
-     * @return Filesystem
-     * @throws \InvalidArgumentException If create is false and the directory with the given path does not exist
+     * {@inheritdoc}
      */
     public function createFilesystem($path, $create = false)
     {
@@ -62,25 +59,44 @@ class Filesystem extends BaseFilesystem
         return new Filesystem($this->adapterFactory, $definition, $this->logger);
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function copyToFilesystem($path, Filesystem $targetFilesystem, $targetPath)
+    {
+        $tempDir = $this->stripTrailingSlash(sys_get_temp_dir()) . DIRECTORY_SEPARATOR . sha1(uniqid(mt_rand(), true));
+
+        if(!@mkdir($tempDir))
+        {
+            $error = error_get_last();
+            throw new \RuntimeException(sprintf('Failed to create directory %s (%s)', $tempDir, strip_tags($error['message'])));
+        }
+
+        try
+        {
+            $this->download($path, $tempDir);
+
+            $targetFilesystem->upload($tempDir, $targetPath);
+
+            $this->getLocalFilesystem()->remove($tempDir);
+        }
+        catch(\Exception $e)
+        {
+            $this->getLocalFilesystem()->remove($tempDir);
+
+            throw $e;
+        }
+    }
 
     /**
-     * Uploads the given file or directory to the filesystem
-     *
-     * @param string      $localPath Adds the file or directory with the given path to the filesystem
-     * @param string|null $remotePath The path on the filesystem
-     * @param bool        $overwrite Whether to overwrite the path on the filesystem if it already exists (false by default)
-     * @return void
-     * @throws \Gaufrette\Exception\FileAlreadyExists If the file or directory already exists on the filesystem and overwrite is false
-     * @throws \InvalidArgumentException If the file or directory specified by $localPath does not exist
+     * {@inheritdoc}
      */
-    public function upload($localPath, $remotePath = null, $overwrite = false)
+    public function upload($localPath, $remotePath, $overwrite = false)
     {
         if(!file_exists((string)$localPath))
         {
             throw new \InvalidArgumentException(sprintf('The path "%s" does not specify a file or directory', $localPath));
         }
-
-        $remotePath = $this->stripTrailingSlash($remotePath) . '/' . basename($localPath);
 
         if($this->has($remotePath) && $overwrite)
         {
@@ -99,37 +115,30 @@ class Filesystem extends BaseFilesystem
     }
 
     /**
-     * Downloads a file or directory
-     *
-     * @param string $remotePath The path to the remote file or directory to download
-     * @param string $localDirectory The path to the local directory where the remote file or directory is downloaded to
-     * @param int    $mode The directory mode of created directories (default is 0777)
-     * @return void
-     * @throws \InvalidArgumentException If the local directory is not writable
-     * @throws \Gaufrette\Exception\FileNotFound If the file or directory does not exist on the filesystem
+     * {@inheritdoc}
      */
-    public function download($remotePath = '/', $localDirectory, $mode = 0777)
+    public function download($remotePath = '/', $localPath, $mode = 0777)
     {
         $remotePath = $this->stripTrailingSlash($remotePath);
 
-        if(!is_dir($localDirectory))
+        if(!is_dir($localPath))
         {
-            throw new \InvalidArgumentException(sprintf('The path "%s" does not specify a directory', $localDirectory));
+            throw new \InvalidArgumentException(sprintf('The path "%s" does not specify a directory', $localPath));
         }
-        if(!is_writable($localDirectory))
+        if(!is_writable($localPath))
         {
-            throw new \InvalidArgumentException(sprintf('The directory "%s" is not writable', $localDirectory));
+            throw new \InvalidArgumentException(sprintf('The directory "%s" is not writable', $localPath));
         }
 
-        $localDirectory = $this->stripTrailingSlash($localDirectory);
+        $localPath = $this->stripTrailingSlash($localPath);
 
         if(!$this->getAdapter()->isDirectory($remotePath))
         {
-            file_put_contents($localDirectory . '/' . basename($remotePath), $this->get($remotePath)->getContent());
+            file_put_contents($localPath . '/' . basename($remotePath), $this->get($remotePath)->getContent());
         }
         else
         {
-            $filesystem = new BaseFilesystem(new Adapter\Local($localDirectory, true, $mode));
+            $filesystem = new BaseFilesystem(new Adapter\Local($localPath, true, $mode));
 
             $keys = $this->listKeys($remotePath);
             foreach($keys['keys'] as $key)
@@ -140,12 +149,7 @@ class Filesystem extends BaseFilesystem
     }
 
     /**
-     * Creates a directory on the filesystem
-     *
-     * @param string $path The path to the directory on the filesystem
-     * @return string the absolute path to the created directory
-     * @throws \Gaufrette\Exception\FileAlreadyExists When file already exists and overwrite is false
-     * @throws \RuntimeException When for any reason content could not be written
+     * {@inheritdoc}
      */
     public function mkdir($path)
     {
@@ -219,5 +223,13 @@ class Filesystem extends BaseFilesystem
         }
 
         return $path;
+    }
+
+    /**
+     * @return LocalFilesystem
+     */
+    private function getLocalFilesystem()
+    {
+        return new LocalFilesystem();
     }
 }
