@@ -62,7 +62,7 @@ class Filesystem extends BaseFilesystem implements FilesystemInterface
     /**
      * {@inheritdoc}
      */
-    public function copyToFilesystem($path, Filesystem $targetFilesystem, $targetPath)
+    public function copyToFilesystem($path, FilesystemInterface $targetFilesystem, $targetPath)
     {
         $tempDir = $this->stripTrailingSlash(sys_get_temp_dir()) . DIRECTORY_SEPARATOR . sha1(uniqid(mt_rand(), true));
 

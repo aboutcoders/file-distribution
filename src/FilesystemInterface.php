@@ -19,12 +19,12 @@ interface FilesystemInterface
     public function createFilesystem($path, $create = false);
 
     /**
-     * @param string     $path The path to a file or directory on the filesystem
-     * @param Filesystem $targetFilesystem The filesystem where the data is copied to
-     * @param string     $targetPath The path to a file or directory on the target filesystem
+     * @param string              $path The path to a file or directory on the filesystem
+     * @param FilesystemInterface $targetFilesystem The filesystem where the data is copied to
+     * @param string              $targetPath The path to a file or directory on the target filesystem
      * @throws \RuntimeException
      */
-    public function copyToFilesystem($path, Filesystem $targetFilesystem, $targetPath);
+    public function copyToFilesystem($path, FilesystemInterface $targetFilesystem, $targetPath);
 
     /**
      * Uploads a file or directory
