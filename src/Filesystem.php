@@ -37,6 +37,13 @@ class Filesystem extends BaseFilesystem implements FilesystemInterface
         parent::__construct($adapter);
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function getDefinition()
+    {
+        return $this->definition;
+    }
 
     /**
      * {@inheritdoc}

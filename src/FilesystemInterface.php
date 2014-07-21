@@ -7,6 +7,12 @@ namespace Abc\Filesystem;
  */
 interface FilesystemInterface
 {
+
+    /**
+     * @return DefinitionInterface
+     */
+    public function getDefinition();
+
     /**
      * Creates a filesystem
      *
