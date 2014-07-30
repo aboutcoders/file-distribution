@@ -2,24 +2,28 @@
 namespace Abc\Filesystem;
 
 use JMS\Serializer\Annotation\Type;
+use JMS\Serializer\Annotation\Groups;
 
 class File implements FileInterface
 {
     /**
      * @var string
      * @Type("string")
+     * @Groups("file")
      */
     protected $path;
 
     /**
      * @var DefinitionInterface
      * @Type("Abc\Filesystem\Definition")
+     * @Groups("file")
      */
     protected $definition;
 
     /**
      * @var
      * @Type("integer")
+     * @Groups({"file"})
      */
     protected $size;
 

@@ -2,6 +2,7 @@
 namespace Abc\Filesystem;
 
 use JMS\Serializer\Annotation\Type;
+use JMS\Serializer\Annotation\Groups;
 
 class Definition implements DefinitionInterface
 {
@@ -9,12 +10,14 @@ class Definition implements DefinitionInterface
     /**
      * @var string
      * @Type("string")
+     * @Groups({"file"})
      */
     protected $type;
 
     /**
      * @var string
      * @Type("string")
+     * @Groups({"file"})
      */
     protected $path;
 

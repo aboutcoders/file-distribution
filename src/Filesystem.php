@@ -83,7 +83,7 @@ class Filesystem extends BaseFilesystem implements FilesystemInterface
         {
             $this->download($path, $tempDir);
 
-            $targetFilesystem->upload($tempDir, $targetPath);
+            $targetFilesystem->upload($tempDir .'/' . basename($path), $targetPath);
 
             $this->getLocalFilesystem()->remove($tempDir);
         }

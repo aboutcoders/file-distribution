@@ -204,7 +204,7 @@ class LocalFilesystemTest extends \PHPUnit_Framework_TestCase
     }
 
 
-    public function testCopyToFilesystem()
+    public function testCopyToFilesystemWithDirectory()
     {
         $subject          = $this->createFilesystem($this->fixtureDir);
         $targetFilesystem = $this->createFilesystem($this->path);
@@ -219,6 +219,17 @@ class LocalFilesystemTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(file_exists($this->path . '/new-directory/barfoo/barfoo.txt'));
         $this->assertTrue(file_exists($this->path . '/new-directory/foobar/foobar'));
         $this->assertTrue(file_exists($this->path . '/new-directory/foobar/foobar.txt'));
+    }
+
+    public function testCopyToFilesystemWithFile()
+    {
+        $subject          = $this->createFilesystem($this->fixtureDir);
+        $targetFilesystem = $this->createFilesystem($this->path);
+
+        $subject->copyToFilesystem('barfoo/barfoo.txt', $targetFilesystem, 'barfoo.txt');
+
+        $this->assertTrue(file_exists($this->path . '/barfoo.txt'));
+        $this->assertFalse(is_dir($this->path . '/barfoo.txt'));
     }
 
 
