@@ -5,6 +5,9 @@ namespace Abc\Filesystem;
 use Gaufrette\Adapter\Local;
 use Symfony\Component\Filesystem\Filesystem as LocalFilesystem;
 
+/**
+ * @author Hannes Schulz <schulz@daten-bahn.de>
+ */
 class LocalFilesystemTest extends \PHPUnit_Framework_TestCase
 {
     /** @var Filesystem */
@@ -34,11 +37,11 @@ class LocalFilesystemTest extends \PHPUnit_Framework_TestCase
 
     public function tearDown()
     {
-        if(is_dir($this->path))
+        /*if(is_dir($this->path))
         {
             $filesystem = new LocalFilesystem;
             $filesystem->remove($this->path);
-        }
+        }*/
     }
 
     public function testCreateClientCreatesPathIfCreateIsTrue()
@@ -232,6 +235,36 @@ class LocalFilesystemTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse(is_dir($this->path . '/barfoo.txt'));
     }
 
+    public function testGetSizeReturnsNullIfFileDoesNotExist()
+    {
+        $this->assertNull($this->subject->size('path/to/nowhere'));
+    }
+
+    public function testGetSizeReturnsSizeInBytes()
+    {
+        $subject          = $this->createFilesystem($this->fixtureDir);
+
+        $this->assertTrue($subject->exists('foobar.txt'));
+        $this->assertEquals(6, $subject->size('foobar.txt'));
+    }
+
+
+    /**
+     * @param null $basePath
+     * @param null $extension
+     * @dataProvider provideCreateData
+     */
+    public function testCreateFile($basePath = null, $extension = null)
+    {
+        $path = $this->subject->create($basePath, $extension);
+
+        $this->assertTrue(file_exists($this->path . '/' . $path));
+        if($extension != null)
+        {
+            $this->assertEquals($extension, pathinfo($path, PATHINFO_EXTENSION));
+        }
+    }
+
 
     public static function getEmptyRemotePath()
     {
@@ -255,5 +288,15 @@ class LocalFilesystemTest extends \PHPUnit_Framework_TestCase
         $definition->setProperties($options);
 
         return $definition;
+    }
+
+    public static function provideCreateData()
+    {
+        return array(
+            array(),
+            array(null, null),
+            array('path/to/directory', 'txt'),
+            array('path/to/directory/', 'txt'),
+        );
     }
 }

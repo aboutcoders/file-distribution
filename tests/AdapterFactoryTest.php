@@ -1,5 +1,8 @@
 <?php
-namespace Abc\Filesystem;
+namespace Abc\Filesystem\Tests;
+
+use Abc\Filesystem\AdapterFactory;
+use Abc\Filesystem\FilesystemType;
 
 class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
 {

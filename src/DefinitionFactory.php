@@ -14,5 +14,7 @@ class DefinitionFactory
         $definition->setType($type);
         $definition->setPath($path);
         $definition->setProperties($properties);
+
+        return $definition;
     }
 } 

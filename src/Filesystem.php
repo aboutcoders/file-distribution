@@ -69,7 +69,7 @@ class Filesystem extends BaseFilesystem implements FilesystemInterface
     /**
      * {@inheritdoc}
      */
-    public function copyToFilesystem($path, FilesystemInterface $targetFilesystem, $targetPath)
+    public function copyToFilesystem($path, FilesystemInterface $targetFilesystem, $targetPath, $overwrite = false)
     {
         $tempDir = $this->stripTrailingSlash(sys_get_temp_dir()) . DIRECTORY_SEPARATOR . sha1(uniqid(mt_rand(), true));
 
@@ -83,7 +83,7 @@ class Filesystem extends BaseFilesystem implements FilesystemInterface
         {
             $this->download($path, $tempDir);
 
-            $targetFilesystem->upload($tempDir .'/' . basename($path), $targetPath);
+            $targetFilesystem->upload($tempDir . '/' . basename($path), $targetPath, $overwrite);
 
             $this->getLocalFilesystem()->remove($tempDir);
         }
@@ -93,6 +93,40 @@ class Filesystem extends BaseFilesystem implements FilesystemInterface
 
             throw $e;
         }
+    }
+
+    /**
+     * Creates an empty file
+     *
+     * @param string $basePath The base path to a directory where the file will be created
+     * @param string|null $fileExtension The file extension of the file to create
+     * @return string The path to the created file
+     * @throws \Gaufrette\Exception\FileAlreadyExists When file already exists
+     * @throws \RuntimeException When for any reason content could not be written
+     */
+    public function create($basePath = '/', $fileExtension = null)
+    {
+        $attempts    = 0;
+        $maxAttempts = 10;
+        $created     = false;
+
+        do
+        {
+            $path = $this->stripTrailingSlash($basePath) . '/' . sha1(uniqid(mt_rand(), true)) . ($fileExtension == null ? '' : '.' . $fileExtension);
+
+            if(!$this->exists($path))
+            {
+                $this->getAdapter()->write($path, '');
+                $created = true;
+            }
+        } while(!$created && $maxAttempts < 10);
+
+        if(!$created)
+        {
+            throw new \RuntimeException('Failed to generate a filename that does not exist yet (multiple attempts lead to a filename that already exists)');
+        }
+
+        return $path;
     }
 
     /**
@@ -186,6 +220,14 @@ class Filesystem extends BaseFilesystem implements FilesystemInterface
         $this->delete($tmp);
 
         return $this->stripTrailingSlash($this->definition->getPath()) . '/' . $path;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function size($path)
+    {
+        return $this->exists($path) ? parent::size($path) : null;
     }
 
     /**

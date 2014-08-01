@@ -1,9 +1,10 @@
 <?php
 
-
 namespace Abc\Filesystem;
 
-
+/**
+ * @author Hannes Schulz <schulz@daten-bahn.de>
+ */
 interface AdapterFactoryInterface
 {
     /**

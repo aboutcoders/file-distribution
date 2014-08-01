@@ -28,9 +28,10 @@ interface FilesystemInterface
      * @param string              $path The path to a file or directory on the filesystem
      * @param FilesystemInterface $targetFilesystem The filesystem where the data is copied to
      * @param string              $targetPath The path to a file or directory on the target filesystem
+     * @param bool                $overwrite Whether to overwrite the file defined by $targetPath
      * @throws \RuntimeException
      */
-    public function copyToFilesystem($path, FilesystemInterface $targetFilesystem, $targetPath);
+    public function copyToFilesystem($path, FilesystemInterface $targetFilesystem, $targetPath, $overwrite = false);
 
     /**
      * Uploads a file or directory
@@ -61,12 +62,23 @@ interface FilesystemInterface
     /**
      * Creates a directory
      *
-     * @param string $path The path to the directory on the filesystem
+     * @param string $path The path to the directory to create
      * @return string the absolute path to the created directory
      * @throws \Gaufrette\Exception\FileAlreadyExists When file already exists and overwrite is false
      * @throws \RuntimeException When for any reason content could not be written
      */
     public function mkdir($path);
+
+    /**
+     * Creates an empty file
+     *
+     * @param string $basePath The base path to a directory where the file will be created
+     * @param string|null $fileExtension The file extension of the file to create
+     * @return string The path to the created file
+     * @throws \Gaufrette\Exception\FileAlreadyExists When file already exists
+     * @throws \RuntimeException When for any creation of the file fails
+     */
+    public function create($basePath = '/', $fileExtension = null);
 
     /**
      * Whether the a file or directory exists
@@ -79,8 +91,17 @@ interface FilesystemInterface
     /**
      * Deletes a file or directory
      *
-     * @param string $path The path to the directory on the filesystem
+     * @param string $path The path to the directory
      * @throws \RuntimeException
      */
     public function remove($path);
+
+    /**
+     * Returns the size of a file in bytes
+     *
+     * @param string $path The path to the file
+     * @return int|null The file size in bytes, null if the file or directory does not exist
+     * @throws \RuntimeException
+     */
+    public function size($path);
 } 

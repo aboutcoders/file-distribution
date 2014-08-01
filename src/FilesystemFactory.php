@@ -6,6 +6,9 @@ use Abc\Filesystem\AdapterFactoryInterface;
 use Abc\Filesystem\DefinitionInterface;
 use Abc\Filesystem\FilesystemInterface;
 
+/**
+ * @author Hannes Schulz <schulz@daten-bahn.de>
+ */
 class FilesystemFactory implements FilesystemFactoryInterface
 {
     /** @var AdapterFactoryInterface */
@@ -25,5 +28,6 @@ class FilesystemFactory implements FilesystemFactoryInterface
     public function create(DefinitionInterface $definition)
     {
         return new Filesystem($this->adapterFactory, $definition);
+
     }
 }

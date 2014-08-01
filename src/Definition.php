@@ -1,4 +1,5 @@
 <?php
+
 namespace Abc\Filesystem;
 
 use JMS\Serializer\Annotation\Type;
