@@ -20,5 +20,4 @@
         <log type="testdox-html" target="./build/logs/testdox.html"/>
     </logging>
 
-
 </phpunit>

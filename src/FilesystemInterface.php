@@ -91,10 +91,23 @@ interface FilesystemInterface
     /**
      * Deletes a file or directory
      *
+     * If the root path ("/" or "") all contents of the filesystem will be removed (truncated).
+     *
      * @param string $path The path to the directory
      * @throws \RuntimeException
      */
     public function remove($path);
+
+
+    /**
+     * Destroys the filesystem
+     *
+     * Removes the directory specified by getDefinition()->getPath()
+     *
+     * @return void
+     * @throws \RuntimeException If destroying the filesystem fails
+     */
+    public function destroy();
 
     /**
      * Returns the size of a file in bytes

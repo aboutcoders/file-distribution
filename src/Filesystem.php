@@ -98,7 +98,7 @@ class Filesystem extends BaseFilesystem implements FilesystemInterface
     /**
      * Creates an empty file
      *
-     * @param string $basePath The base path to a directory where the file will be created
+     * @param string      $basePath The base path to a directory where the file will be created
      * @param string|null $fileExtension The file extension of the file to create
      * @return string The path to the created file
      * @throws \Gaufrette\Exception\FileAlreadyExists When file already exists
@@ -205,7 +205,47 @@ class Filesystem extends BaseFilesystem implements FilesystemInterface
      */
     public function remove($path)
     {
-        return $this->delete($path);
+        $path = $this->stripLeadingSlash($path);
+
+        if(!$this->getAdapter()->isDirectory($path))
+        {
+            parent::delete($path);
+
+            return;
+        }
+
+        $keys = $this->listKeys($path);
+
+        foreach($keys['keys'] as $path)
+        {
+            parent::delete($path);
+        }
+
+        // sort array according after directory depth (DESC)
+        $directories = array_unique($keys['dirs']);
+        usort(
+            $directories,
+            function ($left, $right)
+            {
+                $depthLeft  = substr_count($left, '/');
+                $depthRight = substr_count($right, '/');
+
+                if($depthLeft == $depthRight)
+                {
+                    return 0;
+                }
+                else
+                {
+                    return $depthLeft > $depthRight ? -1 : +1;
+                }
+
+            }
+        );
+
+        foreach($directories as $path)
+        {
+            parent::delete($path);
+        }
     }
 
     /**
@@ -228,6 +268,24 @@ class Filesystem extends BaseFilesystem implements FilesystemInterface
     public function size($path)
     {
         return $this->exists($path) ? parent::size($path) : null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function destroy()
+    {
+        $path = basename($this->definition->getPath());
+
+        $properties = $this->definition->getProperties() == null ? array() : $this->definition->getProperties();
+        $adapter = $this->adapterFactory->create($this->definition->getType(), dirname($this->definition->getPath()), $properties);
+
+        $adapter->delete($path);
+
+        if($adapter->exists($path))
+        {
+            throw new \RuntimeException('Failed to destroy filesystem');
+        }
     }
 
     /**
@@ -269,13 +327,7 @@ class Filesystem extends BaseFilesystem implements FilesystemInterface
      */
     private function stripLeadingSlash($path)
     {
-        $lastStr = substr($path, strlen($path) - 1);
-        if($lastStr == '/' || $lastStr == '\\')
-        {
-            return substr($path, 0, strlen($path) - 1);
-        }
-
-        return $path;
+        return ltrim($path, '/');
     }
 
     /**

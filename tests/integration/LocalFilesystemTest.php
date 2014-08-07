@@ -266,6 +266,41 @@ class LocalFilesystemTest extends \PHPUnit_Framework_TestCase
     }
 
 
+    public function testRemoveWithFile()
+    {
+        $subject          = $this->createFilesystem($this->fixtureDir);
+        $targetFilesystem = $this->createFilesystem($this->path);
+
+        $subject->copyToFilesystem('/', $targetFilesystem, '/');
+        $this->assertTrue(file_exists($this->path . '/foobar.txt'));
+
+        $targetFilesystem->remove('/foobar.txt');
+        $this->assertFalse(file_exists($this->path . '/foobar.txt'));
+    }
+
+    public function testRemoveWithDirectory()
+    {
+        $subject          = $this->createFilesystem($this->fixtureDir);
+        $targetFilesystem = $this->createFilesystem($this->path);
+
+        $subject->copyToFilesystem('/', $targetFilesystem, '/new-directory');
+        $this->assertTrue(file_exists($this->path . '/new-directory/foobar.txt'));
+        $this->assertTrue(is_dir($this->path . '/new-directory/foobar'));
+
+        $targetFilesystem->remove('/');
+
+        $this->assertFalse(file_exists($this->path . '/new-directory'));
+    }
+
+    public function testDestroy()
+    {
+        $targetFilesystem = $this->createFilesystem($this->path);
+        $targetFilesystem->destroy();
+
+        $this->assertFalse(file_exists($this->path));
+    }
+
+
     public static function getEmptyRemotePath()
     {
         return array(
