@@ -20,6 +20,7 @@ class AdapterFactory implements AdapterFactoryInterface
         switch($type)
         {
             case FilesystemType::FTP:
+
                 if(!isset($options['host']))
                 {
                     throw new \InvalidArgumentException('The host must be configured in $options');

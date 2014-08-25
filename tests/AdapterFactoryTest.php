@@ -15,6 +15,15 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
         $this->subject = new AdapterFactory();
     }
 
+    /**
+     * @dataProvider getValidArgs()
+     */
+    public function testCreate($type, $path, $options, $expectedAdapterClass)
+    {
+        $filesystem = $this->subject->create($type, $path, $options);
+
+        $this->assertInstanceOf('Gaufrette\Adapter', $filesystem);
+    }
 
     /**
      * @expectedException \InvalidArgumentException
@@ -22,16 +31,6 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
     public function testCreateAdapterThrowsInvalidArgumentExceptionForUnsupportedTypes()
     {
         $this->subject->create('foobar', '/path/to/nowhere');
-    }
-
-    /**
-     * @dataProvider getValidArgs()
-     */
-    public function testCreateA($type, $path, $options, $expectedAdapterClass)
-    {
-        $filesystem = $this->subject->create($type, $path, $options);
-
-        $this->assertInstanceOf('Gaufrette\Adapter', $filesystem);
     }
 
     /**
@@ -53,4 +52,3 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
         );
     }
 }
- 

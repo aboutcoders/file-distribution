@@ -287,7 +287,7 @@ class LocalFilesystemTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(file_exists($this->path . '/new-directory/foobar.txt'));
         $this->assertTrue(is_dir($this->path . '/new-directory/foobar'));
 
-        $targetFilesystem->remove('/');
+        $targetFilesystem->remove('/new-directory');
 
         $this->assertFalse(file_exists($this->path . '/new-directory'));
     }
