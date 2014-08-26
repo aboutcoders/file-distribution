@@ -292,6 +292,18 @@ class LocalFilesystemTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse(file_exists($this->path . '/new-directory'));
     }
 
+    public function testRemoveWithADirectoryThatContainsSingleDirectory()
+    {
+        $subject          = $this->createFilesystem($this->fixtureDir);
+        $targetFilesystem = $this->createFilesystem($this->path);
+
+        $subject->copyToFilesystem('foobar', $targetFilesystem , '/new-directory/foobar');
+
+        $targetFilesystem->remove('/new-directory');
+
+        $this->assertFalse(file_exists($this->path . '/new-directory'));
+    }
+
     public function testDestroy()
     {
         $targetFilesystem = $this->createFilesystem($this->path);

@@ -2,11 +2,18 @@
 
 namespace Abc\Filesystem;
 
+use Psr\Log\LoggerInterface;
+
 /**
  * FilesystemInterface
  */
 interface FilesystemInterface
 {
+
+    /**
+     * @param LoggerInterface $logger
+     */
+    public function setLogger(LoggerInterface $logger);
 
     /**
      * @return DefinitionInterface
@@ -98,12 +105,8 @@ interface FilesystemInterface
      */
     public function remove($path);
 
-
     /**
      * Destroys the filesystem
-     *
-     * Removes the directory specified by getDefinition()->getPath()
-     *
      * @return void
      * @throws \RuntimeException If destroying the filesystem fails
      */

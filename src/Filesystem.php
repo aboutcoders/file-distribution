@@ -40,6 +40,14 @@ class Filesystem extends BaseFilesystem implements FilesystemInterface
     /**
      * {@inheritdoc}
      */
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getDefinition()
     {
         return $this->definition;
@@ -216,9 +224,9 @@ class Filesystem extends BaseFilesystem implements FilesystemInterface
 
         $keys = $this->listKeys($path);
 
-        foreach($keys['keys'] as $path)
+        foreach($keys['keys'] as $tmp)
         {
-            parent::delete($path);
+            parent::delete($tmp);
         }
 
         // sort array according after directory depth (DESC)
@@ -242,7 +250,12 @@ class Filesystem extends BaseFilesystem implements FilesystemInterface
             }
         );
 
-        foreach($directories as $path)
+        foreach($directories as $tmp)
+        {
+            parent::delete($tmp);
+        }
+
+        if($path != '' && $this->exists($path))
         {
             parent::delete($path);
         }
@@ -275,6 +288,8 @@ class Filesystem extends BaseFilesystem implements FilesystemInterface
      */
     public function destroy()
     {
+        $this->remove('/');
+
         $path = basename($this->definition->getPath());
 
         $properties = $this->definition->getProperties() == null ? array() : $this->definition->getProperties();
