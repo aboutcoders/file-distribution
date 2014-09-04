@@ -24,6 +24,7 @@ class Definition implements DefinitionInterface
 
     /**
      * @var array
+     * @Type("array")
      */
     protected $properties;
 
