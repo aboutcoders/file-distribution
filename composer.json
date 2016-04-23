@@ -11,11 +11,11 @@
     "authors": [
         {
             "name": "Wojciech Ciolko",
-            "email": "w.ciolko@gmail.com"
+            "email": "wojciech.ciolko@aboutcoders.com"
         },
         {
             "name": "Hannes Schulz",
-            "email": "schulz@daten-bahn.de"
+            "email": "hannes.schulz@aboutcoders.com"
         },
         {
             "name": "AboutCoders.com",
@@ -25,7 +25,7 @@
     "require": {
         "php": ">=5.3.3",
         "psr/log": "~1.0",
-        "symfony/filesystem": "~2",
+        "symfony/filesystem": "~2|~3.0",
         "knplabs/gaufrette": "0.2.*@dev",
         "jms/serializer": "~1.0",
         "myclabs/php-enum": "~1.2"
